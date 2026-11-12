@@ -49,10 +49,16 @@ impl FastMod {
 }
 
 /// Small open-addressing map from a pruned hash id to its new row id.
+///
+/// Most lookups miss: only the retained n-grams are in the table. A one-bit
+/// Bloom filter rejects the common case without touching the much larger key
+/// array.
 struct PruneMap {
     keys: Vec<u32>,
     vals: Vec<u32>,
     mask: usize,
+    filter: Vec<u64>,
+    filter_mask: usize,
 }
 
 impl PruneMap {
@@ -61,13 +67,26 @@ impl PruneMap {
         while cap < pairs.len() * 2 {
             cap <<= 1;
         }
+        // About two bytes per entry. The filter has no false negatives; false
+        // positives only fall through to the normal probe.
+        let bits = pairs
+            .len()
+            .saturating_mul(16)
+            .max(8 * 1024)
+            .next_power_of_two();
         let mut map = Self {
             keys: vec![u32::MAX; cap],
             vals: vec![0; cap],
             mask: cap - 1,
+            filter: vec![0; bits / 64],
+            filter_mask: bits - 1,
         };
         for &(k, v) in pairs {
-            let mut slot = Self::hash(k as u32) & map.mask;
+            let h = Self::hash(k as u32);
+            let bit = h & map.filter_mask;
+            map.filter[bit >> 6] |= 1u64 << (bit & 63);
+
+            let mut slot = h & map.mask;
             while map.keys[slot] != u32::MAX {
                 if map.keys[slot] == k as u32 {
                     break;
@@ -87,7 +106,13 @@ impl PruneMap {
 
     #[inline]
     fn get(&self, key: u32) -> Option<u32> {
-        let mut slot = Self::hash(key) & self.mask;
+        let h = Self::hash(key);
+        let bit = h & self.filter_mask;
+        if self.filter[bit >> 6] & (1u64 << (bit & 63)) == 0 {
+            return None;
+        }
+
+        let mut slot = h & self.mask;
         loop {
             let k = self.keys[slot];
             if k == key {
@@ -112,6 +137,8 @@ pub struct Dictionary {
     entries: Vec<DictEntry>,
     /// fastText-compatible open-addressing word lookup table.
     table: Vec<i32>,
+    /// Exact `h % table.len()` without a division.
+    table_mod: FastMod,
     nwords: usize,
     nlabels: usize,
     ntokens: i64,
@@ -225,10 +252,14 @@ impl Dictionary {
             .position(|e| e.word.as_bytes() == EOS)
             .map(|id| id as i32)
             .unwrap_or(-1);
+        // Valid model files keep the table below u32::MAX (the entry count is
+        // an i32). d = 0 is the fallback for anything larger.
+        let table_mod = FastMod::new(u32::try_from(table.len()).unwrap_or(0));
 
         Ok(Self {
             entries,
             table,
+            table_mod,
             nwords: nwords as usize,
             nlabels: nlabels as usize,
             ntokens,
@@ -275,7 +306,7 @@ impl Dictionary {
     pub(crate) fn word_feature_ids(&self, wid: usize, out: &mut Vec<i32>, scratch: &mut Vec<u8>) {
         out.clear();
         let token = self.entries[wid].word.as_bytes();
-        self.add_subwords(token, wid as i32, out, scratch);
+        self.add_subwords(token, wid as i32, token.is_ascii(), out, scratch);
     }
 
     /// Vocabulary id of `</s>`, or `-1` when it is not in the vocabulary.
@@ -312,7 +343,8 @@ impl Dictionary {
     /// Looks a token up in the vocabulary, the same way fastText does.
     #[inline]
     fn lookup(&self, token: &[u8], h: u32) -> i32 {
-        let mut slot = (h as usize) % self.table.len();
+        let len = self.table.len();
+        let mut slot = self.table_slot(h);
         loop {
             let id = self.table[slot];
             if id < 0 {
@@ -321,7 +353,19 @@ impl Dictionary {
             if self.entries[id as usize].word.as_bytes() == token {
                 return id;
             }
-            slot = (slot + 1) % self.table.len();
+            slot += 1;
+            if slot == len {
+                slot = 0;
+            }
+        }
+    }
+
+    #[inline]
+    fn table_slot(&self, h: u32) -> usize {
+        if self.table_mod.d == 0 {
+            (h as usize) % self.table.len()
+        } else {
+            self.table_mod.rem(h) as usize
         }
     }
 
@@ -343,7 +387,14 @@ impl Dictionary {
     }
 
     #[inline]
-    fn add_subwords(&self, token: &[u8], wid: i32, out: &mut Vec<i32>, scratch: &mut Vec<u8>) {
+    fn add_subwords(
+        &self,
+        token: &[u8],
+        wid: i32,
+        ascii: bool,
+        out: &mut Vec<i32>,
+        scratch: &mut Vec<u8>,
+    ) {
         if wid >= 0 {
             out.push(wid);
         }
@@ -363,6 +414,23 @@ impl Dictionary {
         let maxn = self.maxn as usize;
         let minn = self.minn.max(1) as usize;
         if minn > maxn {
+            return;
+        }
+
+        if ascii {
+            // ASCII has one byte per code point, so the UTF-8 boundary
+            // checks collapse to a simple byte range.
+            for i in 0..len {
+                let mut h = FNV_OFFSET;
+                let end = i.saturating_add(maxn).min(len);
+                for (offset, &byte) in word[i..end].iter().enumerate() {
+                    h = (h ^ (byte as i8 as i32 as u32)).wrapping_mul(FNV_PRIME);
+                    let n = offset + 1;
+                    if n >= minn && !(n == 1 && (i == 0 || i + offset + 1 == len)) {
+                        self.push_id(self.fast_mod.rem(h), out);
+                    }
+                }
+            }
             return;
         }
 
@@ -401,7 +469,7 @@ impl Dictionary {
         cache: Option<&[i32]>,
         words: &mut Vec<u32>,
     ) {
-        let h = fnv1a(token);
+        let (h, ascii) = fnv1a_ascii(token);
         let wid = self.lookup(token, h);
         let kind = if wid >= 0 {
             self.entries[wid as usize].kind
@@ -423,7 +491,7 @@ impl Dictionary {
                     }
                 }
             }
-            self.add_subwords(token, wid, feats, scratch);
+            self.add_subwords(token, wid, ascii, feats, scratch);
             if self.word_ngrams > 1 {
                 hashes.push(h as i32);
             }
@@ -515,11 +583,19 @@ fn is_delimiter(b: u8) -> bool {
 /// The signed-byte FNV-1a hash fastText has used since its first release.
 #[inline]
 pub(crate) fn fnv1a(bytes: &[u8]) -> u32 {
+    fnv1a_ascii(bytes).0
+}
+
+/// FNV-1a plus whether the token is ASCII, computed in the same byte pass.
+#[inline]
+fn fnv1a_ascii(bytes: &[u8]) -> (u32, bool) {
     let mut h = FNV_OFFSET;
+    let mut ascii = true;
     for &b in bytes {
+        ascii &= b < 0x80;
         h = (h ^ (b as i8 as i32 as u32)).wrapping_mul(FNV_PRIME);
     }
-    h
+    (h, ascii)
 }
 
 #[cfg(test)]
@@ -539,6 +615,17 @@ mod tests {
     }
 
     #[test]
+    fn prune_filter_keeps_every_entry_reachable() {
+        let pairs: Vec<(i32, i32)> = (0..5_000).map(|i| (i * 131 + 7, i)).collect();
+        let map = PruneMap::build(&pairs);
+        for &(key, value) in &pairs {
+            assert_eq!(map.get(key as u32), Some(value as u32), "key {key}");
+        }
+        assert_eq!(map.get(u32::MAX), None);
+        assert_eq!(map.get(0x8000_0000), None);
+    }
+
+    #[test]
     fn tokenizer_delimiters_and_eos() {
         assert!(is_delimiter(b' '));
         assert!(is_delimiter(b'\n'));
@@ -552,5 +639,7 @@ mod tests {
             fnv1a(b"\xff"),
             (FNV_OFFSET ^ (-1i32 as u32)).wrapping_mul(FNV_PRIME)
         );
+        assert_eq!(fnv1a_ascii(b"hello"), (fnv1a(b"hello"), true));
+        assert!(!fnv1a_ascii(b"h\xff").1);
     }
 }
