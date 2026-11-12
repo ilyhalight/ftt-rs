@@ -27,8 +27,9 @@ embedding rows and multiplying the hidden vector by the output matrix.
   so the embedding table is not copied to the heap.
 - **Per-word row sums.** Character n-grams make a word contribute dozens of
   embedding rows, but that sum never changes. For frequent vocabulary words it
-  is precomputed once at load: a sentence that would gather ~650 rows becomes
-  one vector add per word plus rows for OOV words and word n-grams. The default
+  is precomputed lazily on the first prediction: a sentence that would gather
+  ~650 rows becomes one vector add per word plus rows for OOV words and word
+  n-grams. The default
   cache budget is 32 MiB (`FASTTEXT_TURBO_WORD_CACHE_MB`); this is exact up to
   floating-point summation order and adds roughly 40–55% throughput on
   n-gram-heavy models.
@@ -45,6 +46,11 @@ embedding rows and multiplying the hidden vector by the output matrix.
   FMA pipeline busy; a NEON path covers Apple silicon and other aarch64
   targets; a portable scalar path is always available. There is no
   `-march=native`, so the same binary runs everywhere.
+- **Best-first hierarchical softmax.** The Huffman tree is walked toward the
+  more probable child first, so the top-k heap fills with high-probability
+  leaves early and more branches are pruned. Exact ties keep fastText's
+  left-first order. On the LID models this adds roughly 20–50% at `k=1` and
+  ~10% at `k=5` on one core.
 - **Vectorized softmax denominator.** Only labels whose contribution is above
   single precision are summed, and the vectorized exp keeps that pass off the
   profile. Selected labels are re-scored with `exp` for accuracy.
@@ -53,15 +59,9 @@ embedding rows and multiplying the hidden vector by the output matrix.
   which roughly doubles the throughput of this memory-bound step.
 - **All cores, in order.** Batched prediction splits work across scoped
   threads and reassembles results in input order. No external thread-pool or
-  Rayon dependency.
-- **Norm-bound label skipping.** For softmax models the row norms of the
-  output matrix are precomputed. Blocks of eight labels are visited in
-  descending norm order and skipped when Cauchy-Schwarz says they cannot beat
-  the k-th score and are below the `exp(-20)` softmax cutoff. Scores feed a
-  fused online softmax/top-k, so the full label-score matrix is never
-  materialized. The engine measures the skip ratio on the first batches and
-  automatically falls back to the dense batch kernel if fewer than 25% of
-  blocks are skippable. This is exact within the existing denominator cutoff.
+  Rayon dependency. A worker is only spawned when it has at least 128 lines of
+  work, so small batches stay single-threaded instead of paying spawn cost per
+  line.
 - **Single-pass feature extraction.** Tokenization, cache lookup, word
   n-grams and feature-row collection happen in one token pass. In-vocabulary
   words contribute a cached sum directly, without materializing subword ids,
@@ -173,16 +173,15 @@ Supported model files:
 | Unsupervised models | loaded, but prediction is rejected |
 | Training / quantization | out of scope |
 
-The test suite ships eleven tiny trained models plus a hand-written peaked
-softmax model, covering softmax, hierarchical softmax, one-vs-all, negative
+The test suite ships eleven tiny models trained with the reference Python
+fastText, covering softmax, hierarchical softmax, one-vs-all, negative
 sampling, word n-grams, odd dimensions, UTF-8, OOV text, quantized input,
-qnorm, `dsub=4`, quantized output (including hierarchical softmax), and
-norm-bound skipping. Every recorded prediction is compared label-by-label and
-probability-by-probability through the serial, batch, multi-threaded and
-single-line paths.
+qnorm, `dsub=4`, and quantized output (including hierarchical softmax). Every
+recorded prediction is compared label-by-label and probability-by-probability
+through the serial, batch, multi-threaded and single-line paths.
 
 On those fixtures: **0 label mismatches, maximum probability difference
-1.6e-6**. On the real `lid.176.ftz` (quantized hierarchical softmax, 42,765
+5.6e-7**. On the real `lid.176.ftz` (quantized hierarchical softmax, 42,765
 pruned n-grams, 176 labels): **0 label mismatches, max 4.2e-7**. A 500-line
 bulk run over mixed multilingual text gives 0 label mismatches and at most
 3.3e-6 for both `lid.176.ftz` and the 125 MB dense `lid.176.bin`.
@@ -224,20 +223,6 @@ allocations). End-to-end CLI on 200,000 `lid.176.ftz` lines, including process
 startup, model load and writing output: 276k lines/s on one thread and 922k on
 eight (cache on).
 
-Norm-bound skipping is workload-dependent. On the random synthetic model it
-does not pay off, and the adaptive switch falls back to the dense batch kernel.
-On a deliberately peaked 2,102-label softmax model
-(`scripts/make_peaked_model.py`), it skips the vast majority of label blocks
-per line:
-
-| Peaked synthetic | lines/s, one core |
-| --- | ---: |
-| exhaustive batch kernel (`--no-norm-skip`) | 51,000 |
-| fused online softmax + norm skip | 218,000 (**4.3×**) |
-
-`ftt info` reports whether norm skipping is available and whether the adaptive
-policy has turned it on or off.
-
 Reproduce:
 
 ```bash
@@ -271,10 +256,11 @@ hidden  ──► scores = hidden · Wᵀ ──► softmax / HS / sigmoid
 - `src/main.rs` — the `ftt` CLI, mmap/flat-buffer I/O and formatting.
 
 The model mapping is read-only. As with any memory map, do not modify or
-replace a model file while a `Model` is alive. The word cache is built during
-`Model::load`; set `FASTTEXT_TURBO_WORD_CACHE_MB=0` to skip it (lowest load
-latency and memory) or raise the budget for a large vocabulary. `ftt info`
-prints how many words were cached.
+replace a model file while a `Model` is alive. The word cache is built lazily
+on the first prediction, so `Model::load` and `ftt info` stay cheap; set
+`FASTTEXT_TURBO_WORD_CACHE_MB=0` to skip it entirely (lowest memory) or raise
+the budget for a large vocabulary. `ftt info` reports whether the cache is
+lazy, built, or disabled.
 
 ## Building and testing
 
@@ -307,22 +293,15 @@ BLAS, no `serde`, no build scripts.
   bytes, matching fastText's byte-oriented tokenizer.
 - Quantized-output models are dequantized per label on the fly; they are fast
   because the code rows are small, not because of SIMD.
-- The per-word cache trades memory and load time for throughput. It is built
-  for at most `FASTTEXT_TURBO_WORD_CACHE_MB` (default 32 MiB) and covers the
-  most frequent words first.
-- File input in the CLI is memory-mapped; stdin is streamed in 4,096-line
-  chunks through a reusable byte arena. Input files are not copied.
+- The per-word cache trades memory and first-prediction latency for throughput.
+  It is built lazily for at most `FASTTEXT_TURBO_WORD_CACHE_MB` (default
+  32 MiB) and covers the most frequent words first.
+- File input in the CLI is memory-mapped; stdin is streamed in large chunks
+  (up to 65,536 lines, smaller for large `k`) through a reusable byte arena,
+  and each chunk is predicted with one parallel call. Input files are not
+  copied.
 - The softmax denominator uses a vectorized exp approximation with relative
   error around 1e-7, and skips terms below `exp(-20)`. Labels are unaffected.
-- Norm skipping only applies to softmax models with at least 64 labels and
-  `k < labels`, and only when the adaptive policy sees enough skippable
-  blocks. Disable it explicitly with `--no-norm-skip` or
-  `PredictOptions { norm_skip: false, .. }`.
-- For softmax, ties among labels whose probability rounds to the `+1e-5`
-  output bias can follow raw-score order instead of fastText's
-  `log(p + 1e-5)` order. This affects only the identity of negligible tail
-  labels when `k` is larger than the number of meaningful labels; top-1 and
-  normal `k` are unaffected.
 
 ## License
 

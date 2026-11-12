@@ -458,102 +458,6 @@ mod arm {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    struct Lcg(u64);
-    impl Lcg {
-        fn next(&mut self) -> f32 {
-            self.0 = self
-                .0
-                .wrapping_mul(6_364_136_223_846_793_005)
-                .wrapping_add(1);
-            ((self.0 >> 40) as f32 / (1u64 << 24) as f32) * 2.0 - 1.0
-        }
-    }
-
-    fn bytes_of(v: &[f32]) -> Vec<u8> {
-        let mut out = Vec::with_capacity(v.len() * 4);
-        for x in v {
-            out.extend_from_slice(&x.to_le_bytes());
-        }
-        out
-    }
-
-    #[test]
-    fn dense_kernels_match_scalar_reference() {
-        for &dim in &[1usize, 3, 7, 8, 15, 16, 31, 96, 100, 256, 512] {
-            for &rows in &[1usize, 3, 7, 8, 9, 17, 64] {
-                let mut rng = Lcg(0x1234_5678_9abc_def0 ^ (dim as u64) << 8 ^ rows as u64);
-                let data: Vec<f32> = (0..rows * dim).map(|_| rng.next()).collect();
-                let bytes = bytes_of(&data);
-                let hidden: Vec<f32> = (0..dim).map(|_| rng.next()).collect();
-
-                let mut got = vec![0.0f32; rows];
-                score_line(&hidden, &bytes, rows, dim, &mut got);
-                for i in 0..rows {
-                    let mut want = 0.0f32;
-                    for j in 0..dim {
-                        want += data[i * dim + j] * hidden[j];
-                    }
-                    let tol = 2e-5 * want.abs().max(1.0);
-                    assert!(
-                        (got[i] - want).abs() <= tol,
-                        "score_line dim={dim} rows={rows} row={i}: {} vs {want}",
-                        got[i]
-                    );
-                }
-
-                let nrows = 9.min(rows);
-                let ids: Vec<i32> = (0..nrows)
-                    .map(|_| ((rng.next() + 1.0) * 0.5 * rows as f32) as i32 % rows as i32)
-                    .collect();
-                let mut avg = vec![0.0f32; dim];
-                average_rows(&ids, dim, &bytes, &mut avg);
-                let mut want = vec![0.0f32; dim];
-                for &id in &ids {
-                    for j in 0..dim {
-                        want[j] += data[id as usize * dim + j];
-                    }
-                }
-                let inv = 1.0 / ids.len() as f32;
-                for j in 0..dim {
-                    want[j] *= inv;
-                    assert!(
-                        (avg[j] - want[j]).abs() <= 2e-5,
-                        "average dim={dim} rows={rows} j={j}: {} vs {}",
-                        avg[j],
-                        want[j]
-                    );
-                }
-
-                let batch = 13usize;
-                let hidden_multi: Vec<f32> = (0..batch * dim).map(|_| rng.next()).collect();
-                let mut scores = vec![0.0f32; batch * rows];
-                score_batch(&hidden_multi, batch, &bytes, rows, dim, &mut scores);
-                for b in 0..batch {
-                    let mut line = vec![0.0f32; rows];
-                    score_line(
-                        &hidden_multi[b * dim..(b + 1) * dim],
-                        &bytes,
-                        rows,
-                        dim,
-                        &mut line,
-                    );
-                    for i in 0..rows {
-                        let tol = 2e-5 * line[i].abs().max(1.0);
-                        assert!(
-                            (scores[b * rows + i] - line[i]).abs() <= tol,
-                            "batch dim={dim} rows={rows} b={b} i={i}"
-                        );
-                    }
-                }
-            }
-        }
-    }
-}
-
 /// Sum of `exp(x - max())` over all entries, skipping terms below `-20`
 /// (their relative contribution is under single precision) and using a
 /// vectorized exp approximation. Only the softmax denominator uses this;
@@ -561,7 +465,9 @@ mod tests {
 pub(crate) fn exp_sum(scores: &[f32], max: f32) -> f32 {
     #[cfg(target_arch = "x86_64")]
     {
-        if is_x86_feature_detected!("avx2") {
+        // The polynomial uses FMA, so AVX2 alone is not enough. Calling the
+        // function without FMA would be undefined behaviour.
+        if is_x86_feature_detected!("avx2") && is_x86_feature_detected!("fma") {
             return unsafe { exp_sum_avx2(scores, max) };
         }
     }
@@ -710,3 +616,99 @@ mod exp_arm {
 
 #[cfg(target_arch = "aarch64")]
 use exp_arm::*;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct Lcg(u64);
+    impl Lcg {
+        fn next(&mut self) -> f32 {
+            self.0 = self
+                .0
+                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_add(1);
+            ((self.0 >> 40) as f32 / (1u64 << 24) as f32) * 2.0 - 1.0
+        }
+    }
+
+    fn bytes_of(v: &[f32]) -> Vec<u8> {
+        let mut out = Vec::with_capacity(v.len() * 4);
+        for x in v {
+            out.extend_from_slice(&x.to_le_bytes());
+        }
+        out
+    }
+
+    #[test]
+    fn dense_kernels_match_scalar_reference() {
+        for &dim in &[1usize, 3, 7, 8, 15, 16, 31, 96, 100, 256, 512] {
+            for &rows in &[1usize, 3, 7, 8, 9, 17, 64] {
+                let mut rng = Lcg(0x1234_5678_9abc_def0 ^ (dim as u64) << 8 ^ rows as u64);
+                let data: Vec<f32> = (0..rows * dim).map(|_| rng.next()).collect();
+                let bytes = bytes_of(&data);
+                let hidden: Vec<f32> = (0..dim).map(|_| rng.next()).collect();
+
+                let mut got = vec![0.0f32; rows];
+                score_line(&hidden, &bytes, rows, dim, &mut got);
+                for i in 0..rows {
+                    let mut want = 0.0f32;
+                    for j in 0..dim {
+                        want += data[i * dim + j] * hidden[j];
+                    }
+                    let tol = 2e-5 * want.abs().max(1.0);
+                    assert!(
+                        (got[i] - want).abs() <= tol,
+                        "score_line dim={dim} rows={rows} row={i}: {} vs {want}",
+                        got[i]
+                    );
+                }
+
+                let nrows = 9.min(rows);
+                let ids: Vec<i32> = (0..nrows)
+                    .map(|_| ((rng.next() + 1.0) * 0.5 * rows as f32) as i32 % rows as i32)
+                    .collect();
+                let mut avg = vec![0.0f32; dim];
+                average_rows(&ids, dim, &bytes, &mut avg);
+                let mut want = vec![0.0f32; dim];
+                for &id in &ids {
+                    for j in 0..dim {
+                        want[j] += data[id as usize * dim + j];
+                    }
+                }
+                let inv = 1.0 / ids.len() as f32;
+                for j in 0..dim {
+                    want[j] *= inv;
+                    assert!(
+                        (avg[j] - want[j]).abs() <= 2e-5,
+                        "average dim={dim} rows={rows} j={j}: {} vs {}",
+                        avg[j],
+                        want[j]
+                    );
+                }
+
+                let batch = 13usize;
+                let hidden_multi: Vec<f32> = (0..batch * dim).map(|_| rng.next()).collect();
+                let mut scores = vec![0.0f32; batch * rows];
+                score_batch(&hidden_multi, batch, &bytes, rows, dim, &mut scores);
+                for b in 0..batch {
+                    let mut line = vec![0.0f32; rows];
+                    score_line(
+                        &hidden_multi[b * dim..(b + 1) * dim],
+                        &bytes,
+                        rows,
+                        dim,
+                        &mut line,
+                    );
+                    for i in 0..rows {
+                        let tol = 2e-5 * line[i].abs().max(1.0);
+                        assert!(
+                            (scores[b * rows + i] - line[i]).abs() <= tol,
+                            "batch dim={dim} rows={rows} b={b} i={i}"
+                        );
+                    }
+                }
+            }
+        }
+    }
+}

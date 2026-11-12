@@ -140,57 +140,6 @@ def dump_split(name: str, model, lines: list[str], specs: dict) -> None:
                     f.write(b)
 
 
-def write_peaked_model(path: Path) -> list[str]:
-    """A tiny hand-written softmax model whose first four label rows have much
-    larger norms than the rest, so norm-bound skipping is guaranteed to fire.
-    """
-    rng = random.Random(123)
-    dim, nwords, nlabels, bucket = 16, 64, 128, 1000
-    with open(path, "wb") as f:
-        f.write(struct.pack("<ii", 793_712_314, 12))
-        f.write(
-            struct.pack(
-                "<12id", dim, 5, 1, 1, 5, 1, 3, 3, bucket, 0, 0, 100, 1e-4
-            )
-        )
-        f.write(
-            struct.pack(
-                "<iiiqq", nwords + nlabels, nwords, nlabels, 1_000_000, -1
-            )
-        )
-        words = ["</s>"] + [f"w{i}" for i in range(1, nwords)]
-        for word in words:
-            f.write(word.encode() + b"\0")
-            f.write(struct.pack("<qb", 1000, 0))
-        for i in range(nlabels):
-            f.write(f"__label__L{i}".encode() + b"\0")
-            f.write(struct.pack("<qb", 1000, 1))
-
-        f.write(b"\0")
-        f.write(struct.pack("<qq", nwords + bucket, dim))
-        for _ in range(nwords + bucket):
-            f.write(struct.pack(f"<{dim}f", *[rng.gauss(0, 1) for _ in range(dim)]))
-        f.write(b"\0")
-        f.write(struct.pack("<qq", nlabels, dim))
-        for row in range(nlabels):
-            scale = 20.0 if row < 4 else 0.01
-            values = [rng.gauss(0, 1) * scale for _ in range(dim)]
-            f.write(struct.pack(f"<{dim}f", *values))
-
-    return [
-        "w1 w2 w3",
-        "w10 w11 w12 w13",
-        "w40 w41",
-        "w20 w21 w22 w23 w24",
-        "hello world",
-        "w5 " * 50,
-        "",
-        "w63 w62",
-        "w0 w1",
-        "w30 w31 w32",
-    ]
-
-
 def train(name: str, corpus: Path, **kwargs):
     model = fasttext.train_supervised(
         input=str(corpus), thread=1, seed=42, verbose=0, **kwargs
@@ -223,11 +172,6 @@ def main() -> None:
     for name, cfg in configs.items():
         model = train(name, corpus, **cfg)
         dump_split(name, model, TEST_LINES, specs)
-
-    # A hand-written peaked softmax model: exercises norm-bound skipping.
-    peaked_lines = write_peaked_model(MODELS / "peaked.bin")
-    peaked = fasttext.load_model(str(MODELS / "peaked.bin"))
-    dump_split("peaked", peaked, peaked_lines, {"top1": (1, 0.0)})
 
     # An unsupervised model: loaded for inspection, but not usable for
     # classification prediction.

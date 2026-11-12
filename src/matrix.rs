@@ -1,6 +1,6 @@
 //! Dense and product-quantized matrix views over the mapped model file.
 
-use crate::io::{f32_at, Cursor};
+use crate::io::Cursor;
 use crate::quant::ProductQuantizer;
 use crate::{simd, Error, Result};
 
@@ -163,65 +163,6 @@ impl MatrixView {
                     let off = m.codes_offset + i * m.pq.nsubq;
                     *o = m.pq.dot_code(data, hidden, off, alpha);
                 }
-            }
-        }
-    }
-
-    /// Scores `rows` labels starting at `start` against one hidden vector.
-    /// Used by the norm-bound softmax path, which visits label blocks in a
-    /// norm-sorted order and skips blocks that cannot matter.
-    pub(crate) fn score_block(
-        &self,
-        data: &[u8],
-        hidden: &[f32],
-        start: usize,
-        rows: usize,
-        out: &mut [f32],
-    ) {
-        assert_eq!(out.len(), rows);
-        match self {
-            MatrixView::Dense(m) => {
-                let base = m.data_offset + start * m.cols * 4;
-                simd::score_line(hidden, &data[base..], rows, m.cols, out);
-            }
-            MatrixView::Quant(m) => {
-                for (r, o) in out.iter_mut().enumerate() {
-                    let row = start + r;
-                    let alpha = self.quant_alpha(m, data, row);
-                    let off = m.codes_offset + row * m.pq.nsubq;
-                    *o = m.pq.dot_code(data, hidden, off, alpha);
-                }
-            }
-        }
-    }
-
-    /// L2 norm of every row, used to bound dot products during prediction.
-    pub(crate) fn row_norms(&self, data: &[u8], dim: usize) -> Vec<f32> {
-        match self {
-            MatrixView::Dense(m) => {
-                let mut norms = Vec::with_capacity(m.rows);
-                for row in 0..m.rows {
-                    let off = m.data_offset + row * m.cols * 4;
-                    let mut sum = 0.0f32;
-                    for j in 0..dim {
-                        let v = unsafe { f32_at(data, off + j * 4) };
-                        sum += v * v;
-                    }
-                    norms.push(sum.sqrt());
-                }
-                norms
-            }
-            MatrixView::Quant(m) => {
-                let mut row = vec![0.0f32; dim];
-                let mut norms = Vec::with_capacity(m.rows);
-                for i in 0..m.rows {
-                    row.fill(0.0);
-                    let alpha = self.quant_alpha(m, data, i);
-                    let off = m.codes_offset + i * m.pq.nsubq;
-                    m.pq.add_code(data, &mut row, off, alpha);
-                    norms.push(row.iter().map(|v| v * v).sum::<f32>().sqrt());
-                }
-                norms
             }
         }
     }

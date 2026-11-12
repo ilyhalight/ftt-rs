@@ -34,7 +34,8 @@ impl FastMod {
     fn new(d: u32) -> Self {
         Self {
             d,
-            m: if d == 0 { 0 } else { u64::MAX / d as u64 + 1 },
+            // d == 1 has no representable M; its remainder is always zero.
+            m: if d <= 1 { 0 } else { u64::MAX / d as u64 + 1 },
         }
     }
 
@@ -452,17 +453,13 @@ impl Dictionary {
         }
     }
 
-    /// Computes the input-matrix row ids for one line.
+    /// Tokenizes a line in one pass and computes its input-matrix row ids.
     ///
-    /// If `append_eos` is true a sentence-end token is appended, matching the
-    /// Python API which appends a newline to every input string. A newline
-    /// inside `line` terminates processing at that point, as in fastText.
-    /// Tokenizes a line in one pass. Cached words are reported as slots in
-    /// `words`; OOV subwords, cache misses and word n-grams go to `feats`.
-    ///
-    /// If `append_eos` is true a sentence-end token is appended, matching the
-    /// Python API which appends a newline to every input string. A newline
-    /// inside `line` terminates processing at that point, as in fastText.
+    /// Cached words are reported as slots in `words`; OOV subwords, cache
+    /// misses and word n-grams go to `feats`. If `append_eos` is true a
+    /// sentence-end token is appended, matching the Python API which appends a
+    /// newline to every input string. A newline inside `line` terminates
+    /// processing at that point, as in fastText.
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn features_fused(
         &self,

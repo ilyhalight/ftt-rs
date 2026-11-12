@@ -4,8 +4,22 @@ use std::path::Path;
 use std::process::ExitCode;
 use std::time::Instant;
 
-use fasttext_turbo::{Model, PredictOptions, Prediction};
+use fasttext_turbo::{Model, PredictOptions, Prediction, WordCacheState};
 use memmap2::Mmap;
+
+/// Lines handed to one parallel batch. A chunk is large enough to amortize
+/// thread spawn/join over many internal batches.
+const CHUNK_LINES: usize = 65_536;
+
+/// Large `k` produces many predictions per line; keep those chunks small to
+/// bound the flat output buffer.
+fn chunk_lines(opts: &PredictOptions) -> usize {
+    if opts.k <= 16 {
+        CHUNK_LINES
+    } else {
+        4_096
+    }
+}
 
 enum InputData {
     Mapped(Mmap),
@@ -82,10 +96,9 @@ INPUT:
 OPTIONS:
     -k N            labels per line (also accepted as a positional after input)
     -threshold P    minimum probability (default 0)
-    -threads N      worker threads (default: all available cores; 1 = serial)
+    -threads N      worker threads (default: all; small batches stay serial)
     -batch N        lines per scoring batch (default: automatic)
     --no-eos        do not append the end-of-sentence token
-    --no-norm-skip  disable norm-bound label skipping for softmax models
     --prob          print probabilities (predict-prob always does)
     -repeat R       bench repetitions (default 3)
 
@@ -105,15 +118,7 @@ const VALUE_FLAGS: &[&str] = &[
     "-repeat",
     "--repeat",
 ];
-const BOOL_FLAGS: &[&str] = &[
-    "-h",
-    "--help",
-    "--version",
-    "-V",
-    "--no-eos",
-    "--no-norm-skip",
-    "--prob",
-];
+const BOOL_FLAGS: &[&str] = &["-h", "--help", "--version", "-V", "--no-eos", "--prob"];
 
 struct Cli {
     args: Vec<String>,
@@ -289,14 +294,11 @@ fn run() -> Result<(), String> {
             if let Some(extra) = rest.get(at) {
                 return Err(format!("unexpected argument {extra:?}"));
             }
-            let opts = PredictOptions {
-                k,
-                threshold,
-                threads,
-                batch_size,
-                append_eos: !cli.has(&["--no-eos"]),
-                norm_skip: !cli.has(&["--no-norm-skip"]),
-            };
+            let opts = PredictOptions::k(k)
+                .with_threshold(threshold)
+                .with_threads(threads)
+                .with_batch_size(batch_size)
+                .with_append_eos(!cli.has(&["--no-eos"]));
             let show_prob = command != "predict" || cli.has(&["--prob"]);
 
             let model = Model::load(model_path).map_err(|e| e.to_string())?;
@@ -319,14 +321,10 @@ fn run() -> Result<(), String> {
                 .max(1);
             let batch_size =
                 parse_flag::<usize>(&cli, &["-batch", "--batch"], "batch size")?.unwrap_or(0);
-            let opts = PredictOptions {
-                k,
-                threshold: 0.0,
-                threads,
-                batch_size,
-                append_eos: !cli.has(&["--no-eos"]),
-                norm_skip: !cli.has(&["--no-norm-skip"]),
-            };
+            let opts = PredictOptions::k(k)
+                .with_threads(threads)
+                .with_batch_size(batch_size)
+                .with_append_eos(!cli.has(&["--no-eos"]));
             bench(model_path, input, &opts, repeat)
         }
         "features" => {
@@ -400,11 +398,12 @@ fn predict_stream(
     let mut out = BufWriter::with_capacity(1 << 16, stdout.lock());
     let mut flat: Vec<Prediction<'_>> = Vec::new();
     let mut lengths: Vec<usize> = Vec::new();
+    let chunk_lines = chunk_lines(opts);
 
     if let Some(path) = input {
         let file = File::open(path).map_err(|e| format!("cannot open {path}: {e}"))?;
         let mmap = unsafe { Mmap::map(&file) }.map_err(|e| format!("cannot map {path}: {e}"))?;
-        for chunk in split_lines(&mmap).chunks(4096) {
+        for chunk in split_lines(&mmap).chunks(chunk_lines) {
             model
                 .predict_batch_bytes_into(chunk, opts, &mut flat, &mut lengths)
                 .map_err(|e| e.to_string())?;
@@ -412,7 +411,7 @@ fn predict_stream(
         }
     } else {
         // Stdin cannot be mapped; keep lines in a reusable arena so no line is
-        // allocated individually.
+        // allocated individually. Flush in large chunks to amortize threads.
         let mut reader = BufReader::new(io::stdin());
         let mut line = Vec::new();
         let mut arena = Vec::new();
@@ -434,7 +433,7 @@ fn predict_stream(
             let start = arena.len();
             arena.extend_from_slice(&line);
             spans.push((start, line.len()));
-            if spans.len() >= 4096 {
+            if spans.len() >= chunk_lines {
                 flush_stdin_chunk(
                     model,
                     &arena,
@@ -546,20 +545,13 @@ fn bench(
     if lines.is_empty() {
         return Err("no input lines".into());
     }
-    let threads = if opts.threads == 0 {
-        std::thread::available_parallelism()
-            .map(|n| n.get())
-            .unwrap_or(1)
-    } else {
-        opts.threads
-    };
+    let threads = model.worker_threads(lines.len(), opts.threads);
 
     eprintln!(
         "model: {} ({:.1} MiB, {:.2} ms to load)\n\
          {} labels, dim {}, {} words, model {}, loss {}, quantized {}\n\
          input: {} lines; k {}, threads {}, batch {}\n\
-         word cache: {}\n\
-         norm skip: {}",
+         word cache: {}",
         Path::new(model_path)
             .file_name()
             .and_then(|s| s.to_str())
@@ -580,11 +572,13 @@ fn bench(
         } else {
             opts.batch_size.to_string()
         },
-        match model.word_cache_stats() {
-            Some((words, bytes)) => format!("{words} words, {:.1} MiB", bytes as f64 / 1048576.0),
-            None => "disabled".to_string(),
-        },
-        model.norm_skip_status().unwrap_or("not applicable")
+        match model.word_cache_state() {
+            WordCacheState::Built { words, bytes } => {
+                format!("{words} words, {:.1} MiB", bytes as f64 / 1048576.0)
+            }
+            WordCacheState::Pending => "lazy (builds on first prediction)".to_string(),
+            WordCacheState::Disabled => "disabled".to_string(),
+        }
     );
 
     let mut flat: Vec<Prediction<'_>> = Vec::new();
@@ -597,6 +591,13 @@ fn bench(
         .map_err(|e| e.to_string())?;
     std::hint::black_box(&flat);
     let warm_s = warm.elapsed().as_secs_f64();
+
+    if let WordCacheState::Built { words, bytes } = model.word_cache_state() {
+        eprintln!(
+            "word cache built: {words} words ({:.1} MiB)",
+            bytes as f64 / 1048576.0
+        );
+    }
 
     let mut best = f64::INFINITY;
     let mut total = 0.0;
@@ -623,9 +624,6 @@ fn bench(
         lines.len() as f64 / best,
         lines.len() as f64 * repeat as f64 / total
     );
-    if let Some(status) = model.norm_skip_status() {
-        eprintln!("norm skip after runs: {status}");
-    }
     Ok(())
 }
 
@@ -647,24 +645,30 @@ fn print_info(model_path: &str) -> Result<(), String> {
     println!("wordNgrams    {}", a.word_ngrams);
     println!("quantized     {}", model.is_quantized());
     println!("pruned ngrams {}", d.prune_size());
-    if let Some((words, bytes)) = model.word_cache_stats() {
-        println!(
+    match model.word_cache_state() {
+        WordCacheState::Built { words, bytes } => println!(
             "word cache    {words} words ({:.1} MiB)",
             bytes as f64 / 1048576.0
-        );
-    } else {
-        println!("word cache    disabled");
+        ),
+        WordCacheState::Pending => {
+            println!("word cache    lazy (built on first prediction)")
+        }
+        WordCacheState::Disabled => println!("word cache    disabled"),
     }
-    println!(
-        "norm skip     {}",
-        model.norm_skip_status().unwrap_or("not applicable")
-    );
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn chunk_size_adapts_to_k() {
+        assert_eq!(chunk_lines(&PredictOptions::k(1)), CHUNK_LINES);
+        assert_eq!(chunk_lines(&PredictOptions::k(16)), CHUNK_LINES);
+        assert_eq!(chunk_lines(&PredictOptions::k(17)), 4_096);
+        assert_eq!(chunk_lines(&PredictOptions::k(100)), 4_096);
+    }
 
     #[test]
     fn probability_format_matches_default_ostream_precision() {

@@ -5,7 +5,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use fasttext_turbo::{Model, PredictOptions};
+use fasttext_turbo::{Model, PredictOptions, WordCacheState};
 
 const MAGIC: u32 = 0x4654_4631;
 const TOL: f32 = 2e-5;
@@ -86,14 +86,9 @@ fn read_fixture(path: &Path) -> Fixture {
 }
 
 fn opts(k: usize, threshold: f32, threads: usize) -> PredictOptions {
-    PredictOptions {
-        k,
-        threshold,
-        threads,
-        batch_size: 0,
-        append_eos: true,
-        norm_skip: true,
-    }
+    PredictOptions::k(k)
+        .with_threshold(threshold)
+        .with_threads(threads)
 }
 
 fn model_files() -> Vec<PathBuf> {
@@ -199,10 +194,10 @@ fn matches_reference_fasttext() {
     }
 
     assert!(
-        checked_models >= 12,
-        "expected at least 12 model fixtures, got {checked_models}"
+        checked_models >= 11,
+        "expected at least 11 model fixtures, got {checked_models}"
     );
-    assert!(checked_cases >= 34, "expected at least 34 cases");
+    assert!(checked_cases >= 33, "expected at least 33 cases");
 }
 
 #[test]
@@ -211,45 +206,21 @@ fn api_edge_cases() {
     let model = Model::load(&path).unwrap();
 
     // k = 0 returns nothing; k larger than the label set returns every label.
-    let none = model
-        .predict(
-            "good great",
-            &PredictOptions {
-                k: 0,
-                ..PredictOptions::default()
-            },
-        )
-        .unwrap();
+    let none = model.predict("good great", &PredictOptions::k(0)).unwrap();
     assert!(none.is_empty());
     let all = model
-        .predict(
-            "good great",
-            &PredictOptions {
-                k: 100,
-                ..PredictOptions::default()
-            },
-        )
+        .predict("good great", &PredictOptions::k(100))
         .unwrap();
     assert_eq!(all.len(), model.nlabels());
 
     // An impossible threshold filters everything.
     let filtered = model
-        .predict(
-            "good great",
-            &PredictOptions {
-                k: 3,
-                threshold: 1.0,
-                ..PredictOptions::default()
-            },
-        )
+        .predict("good great", &PredictOptions::k(3).with_threshold(1.0))
         .unwrap();
     assert!(filtered.is_empty());
 
     // append_eos=false on an empty line has no features and no predictions.
-    let opts_no_eos = PredictOptions {
-        append_eos: false,
-        ..PredictOptions::default()
-    };
+    let opts_no_eos = PredictOptions::default().with_append_eos(false);
     assert!(model.predict("", &opts_no_eos).unwrap().is_empty());
     assert!(!model
         .predict("", &PredictOptions::default())
@@ -303,23 +274,13 @@ fn api_edge_cases() {
     let a = model
         .predict_batch(
             &lines,
-            &PredictOptions {
-                k: 2,
-                threads: 1,
-                batch_size: 1,
-                ..PredictOptions::default()
-            },
+            &PredictOptions::k(2).with_threads(1).with_batch_size(1),
         )
         .unwrap();
     let b = model
         .predict_batch(
             &lines,
-            &PredictOptions {
-                k: 2,
-                threads: 4,
-                batch_size: 8,
-                ..PredictOptions::default()
-            },
+            &PredictOptions::k(2).with_threads(4).with_batch_size(8),
         )
         .unwrap();
     assert_eq!(a.len(), lines.len());
@@ -357,14 +318,7 @@ fn api_edge_cases() {
 
     // An absurd batch size must not overflow the chunk arithmetic.
     let huge = model
-        .predict_batch(
-            &lines,
-            &PredictOptions {
-                k: 2,
-                batch_size: usize::MAX,
-                ..PredictOptions::default()
-            },
-        )
+        .predict_batch(&lines, &PredictOptions::k(2).with_batch_size(usize::MAX))
         .unwrap();
     assert_eq!(huge.len(), lines.len());
 }
@@ -373,12 +327,28 @@ fn api_edge_cases() {
 fn word_cache_is_used_only_when_it_can_help() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/data/models");
     let with_ngrams = Model::load(dir.join("dense_softmax.bin")).unwrap();
+    assert!(matches!(
+        with_ngrams.word_cache_state(),
+        WordCacheState::Pending
+    ));
+    assert!(with_ngrams.word_cache_stats().is_none());
+    with_ngrams
+        .predict("good great", &PredictOptions::k(1))
+        .unwrap();
     let (words, bytes) = with_ngrams.word_cache_stats().expect("cache expected");
     assert_eq!(words, with_ngrams.dictionary().nwords());
     assert!(bytes > 0);
+    assert!(matches!(
+        with_ngrams.word_cache_state(),
+        WordCacheState::Built { .. }
+    ));
     // Character n-grams are what make the cache worthwhile; a model with
     // maxn=0 gets no cache.
     let without = Model::load(dir.join("dense_nonchar.bin")).unwrap();
+    assert!(matches!(
+        without.word_cache_state(),
+        WordCacheState::Disabled
+    ));
     assert!(without.word_cache_stats().is_none());
 }
 
@@ -521,52 +491,4 @@ fn flat_batch_output_matches_nested_output() {
         .unwrap();
     assert_eq!(lengths.len(), lines.len());
     assert_eq!(flat.len(), lengths.iter().sum::<usize>());
-}
-
-#[test]
-fn norm_skip_path_matches_exhaustive_scoring() {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/data/models/quant_qout.ftz");
-    let model = Model::load(&path).unwrap();
-    assert!(model.norm_skip_status().is_some(), "expected norm blocks");
-    let lines = [
-        "shared alpha beta group3 w17_4 w17_5",
-        "shared alpha beta group5 w299_1 w299_2",
-        "w0_0 w1_1 w2_2",
-        "",
-    ];
-    let fast = model
-        .predict_batch(
-            &lines,
-            &PredictOptions {
-                k: 5,
-                norm_skip: true,
-                threads: 1,
-                ..PredictOptions::default()
-            },
-        )
-        .unwrap();
-    let exhaustive = model
-        .predict_batch(
-            &lines,
-            &PredictOptions {
-                k: 5,
-                norm_skip: false,
-                threads: 1,
-                ..PredictOptions::default()
-            },
-        )
-        .unwrap();
-    for (a, b) in fast.iter().zip(&exhaustive) {
-        assert_eq!(a.len(), b.len());
-        for (x, y) in a.iter().zip(b) {
-            assert_eq!(x.label, y.label);
-            assert!(
-                (x.probability - y.probability).abs() <= 2e-5,
-                "norm skip changed {}: {} vs {}",
-                x.label,
-                x.probability,
-                y.probability
-            );
-        }
-    }
 }

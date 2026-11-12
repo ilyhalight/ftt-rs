@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::fs::File;
 use std::path::Path;
-use std::sync::atomic::{AtomicU64, AtomicU8, Ordering as AtomicOrdering};
+use std::sync::OnceLock;
 
 use memmap2::Mmap;
 
@@ -17,20 +17,23 @@ use crate::Result;
 
 const MAGIC: i32 = 793_712_314;
 const MAX_SUPPORTED_VERSION: i32 = 12;
-/// Scores more than this far below the running maximum cannot meaningfully
-/// affect the softmax denominator (the same cutoff used by `exp_sum`).
-const NORM_CUTOFF: f32 = 20.0;
 
 /// Options for a prediction.
+///
+/// Construct it with [`PredictOptions::default`] or [`PredictOptions::k`] and
+/// the `with_*` builder methods. The struct is `#[non_exhaustive]` so new
+/// options can be added without breaking callers.
 #[derive(Clone, Copy, Debug)]
+#[non_exhaustive]
 pub struct PredictOptions {
     /// Number of labels to return. `0` returns no labels.
     pub k: usize,
     /// Minimum probability. Labels below it are omitted, as in fastText.
     pub threshold: f32,
     /// Worker threads for [`Model::predict_batch`]. `0` uses all available
-    /// cores; values above the core count are clamped. A single-line
-    /// prediction always runs on the calling thread.
+    /// cores; values are clamped to the core count and to the amount of work
+    /// (at least 128 lines per worker). A single-line prediction always runs
+    /// on the calling thread.
     pub threads: usize,
     /// Lines per batch. `0` chooses a size that keeps the score matrix in
     /// cache (between 8 and 64 lines). Batches are independent, so this only
@@ -41,11 +44,6 @@ pub struct PredictOptions {
     /// to `false` to score the raw line; a literal newline in `line` still
     /// produces an EOS token, as in fastText.
     pub append_eos: bool,
-    /// Use per-label norm bounds to skip output blocks that cannot affect the
-    /// top-k result or the softmax denominator. Enabled by default for softmax
-    /// models with at least 64 labels. This is an exact screen within the
-    /// existing `exp(-20)` denominator cutoff.
-    pub norm_skip: bool,
 }
 
 impl Default for PredictOptions {
@@ -56,7 +54,6 @@ impl Default for PredictOptions {
             threads: 0,
             batch_size: 0,
             append_eos: true,
-            norm_skip: true,
         }
     }
 }
@@ -78,6 +75,18 @@ impl PredictOptions {
         self.threshold = threshold;
         self
     }
+
+    /// Sets the number of lines per scoring batch. `0` selects automatically.
+    pub fn with_batch_size(mut self, batch_size: usize) -> Self {
+        self.batch_size = batch_size;
+        self
+    }
+
+    /// Sets whether an end-of-sentence token is appended to each line.
+    pub fn with_append_eos(mut self, append_eos: bool) -> Self {
+        self.append_eos = append_eos;
+        self
+    }
 }
 
 /// One label and its probability.
@@ -89,6 +98,17 @@ pub struct Prediction<'a> {
     /// this includes a small `+1e-5` bias added when converting its internal
     /// log-probability back to a probability.
     pub probability: f32,
+}
+
+/// State of the lazy per-word sum cache.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum WordCacheState {
+    /// The model configuration or cache budget disables the cache.
+    Disabled,
+    /// Configured, but not built yet. The first prediction builds it.
+    Pending,
+    /// Ready to use.
+    Built { words: usize, bytes: usize },
 }
 
 /// A loaded fastText model. All matrices are memory-mapped; loading a 2 GB
@@ -106,91 +126,9 @@ pub struct Model {
     output: MatrixView,
     quantized: bool,
     hs: Option<HsTree>,
-    word_cache: Option<WordCache>,
-    softmax_blocks: Option<SoftmaxBlocks>,
-}
-
-/// A block of output labels with an upper bound on the L2 norm of any row in
-/// the block. Blocks are visited in descending norm order: once the best
-/// score so far is large enough, all remaining blocks are provably
-/// irrelevant to both top-k and the `exp(-20)` softmax denominator.
-struct NormBlock {
-    start: u32,
-    len: u8,
-    max_norm: f32,
-}
-
-struct SoftmaxBlocks {
-    blocks: Vec<NormBlock>,
-    /// 0 = evaluating, 1 = norm skipping pays off, 2 = use the batch kernel.
-    state: AtomicU8,
-    decisions: AtomicU64,
-    skipped: AtomicU64,
-}
-
-impl SoftmaxBlocks {
-    const DECISION_SAMPLES: u64 = 256;
-    const MIN_SKIP_RATIO: f64 = 0.25;
-
-    #[inline]
-    fn enabled(&self) -> bool {
-        self.state.load(AtomicOrdering::Relaxed) != 2
-    }
-
-    fn note(&self, decisions: u64, skipped: u64) {
-        if self.state.load(AtomicOrdering::Relaxed) != 0 {
-            return;
-        }
-        let total = self.decisions.fetch_add(decisions, AtomicOrdering::Relaxed) + decisions;
-        let skipped = self.skipped.fetch_add(skipped, AtomicOrdering::Relaxed) + skipped;
-        if total >= Self::DECISION_SAMPLES {
-            let ratio = skipped as f64 / total as f64;
-            self.state.store(
-                if ratio >= Self::MIN_SKIP_RATIO { 1 } else { 2 },
-                AtomicOrdering::Relaxed,
-            );
-        }
-    }
-
-    fn status(&self) -> &'static str {
-        match self.state.load(AtomicOrdering::Relaxed) {
-            1 => "on",
-            2 => "off (not peaked enough)",
-            _ => "auto",
-        }
-    }
-}
-
-impl SoftmaxBlocks {
-    const BLOCK: usize = 8;
-    const MAX_NORM_ELEMENTS: usize = 64_000_000;
-
-    fn build(output: &MatrixView, data: &[u8], dim: usize, labels: usize) -> Option<Self> {
-        if labels == 0 || labels.saturating_mul(dim) > Self::MAX_NORM_ELEMENTS {
-            return None;
-        }
-        let norms = output.row_norms(data, dim);
-        let mut blocks = Vec::with_capacity(labels.div_ceil(Self::BLOCK));
-        for start in (0..labels).step_by(Self::BLOCK) {
-            let len = Self::BLOCK.min(labels - start);
-            let max_norm = norms[start..start + len]
-                .iter()
-                .copied()
-                .fold(0.0f32, f32::max);
-            blocks.push(NormBlock {
-                start: start as u32,
-                len: len as u8,
-                max_norm,
-            });
-        }
-        blocks.sort_unstable_by(|a, b| b.max_norm.total_cmp(&a.max_norm));
-        Some(Self {
-            blocks,
-            state: AtomicU8::new(0),
-            decisions: AtomicU64::new(0),
-            skipped: AtomicU64::new(0),
-        })
-    }
+    /// Built on the first prediction. `None` inside means the configuration
+    /// disables the cache.
+    word_cache: OnceLock<Option<WordCache>>,
 }
 
 /// Sum of the input rows contributed by each frequent vocabulary word.
@@ -208,17 +146,30 @@ struct WordCache {
 }
 
 impl WordCache {
-    fn build(args: &Args, dict: &Dictionary, input: &MatrixView, data: &[u8]) -> Option<Self> {
-        const DEFAULT_MB: usize = 32;
-        let budget_mb = std::env::var("FASTTEXT_TURBO_WORD_CACHE_MB")
+    const DEFAULT_MB: usize = 32;
+
+    fn budget_mb() -> usize {
+        std::env::var("FASTTEXT_TURBO_WORD_CACHE_MB")
             .ok()
             .and_then(|s| s.parse::<usize>().ok())
-            .unwrap_or(DEFAULT_MB);
-        if budget_mb == 0 {
+            .unwrap_or(Self::DEFAULT_MB)
+    }
+
+    fn configured(args: &Args, nwords: usize) -> bool {
+        nwords > 0
+            && args.model == ModelKind::Supervised
+            && args.maxn > 0
+            && args.minn <= args.maxn
+            && args.bucket > 0
+    }
+
+    fn build(args: &Args, dict: &Dictionary, input: &MatrixView, data: &[u8]) -> Option<Self> {
+        let nwords = dict.nwords();
+        if !Self::configured(args, nwords) {
             return None;
         }
-        let nwords = dict.nwords();
-        if nwords == 0 {
+        let budget_mb = Self::budget_mb();
+        if budget_mb == 0 {
             return None;
         }
         let dim = args.dim;
@@ -299,7 +250,6 @@ struct Workspace {
     top: TopK,
     ranked: Vec<(u32, f32)>,
     stack: Vec<(usize, f32)>,
-    online: Online,
     offsets: Vec<usize>,
     valid: Vec<usize>,
 }
@@ -399,24 +349,6 @@ impl Model {
         } else {
             None
         };
-        let word_cache = if args.model == ModelKind::Supervised
-            && args.maxn > 0
-            && args.minn <= args.maxn
-            && args.bucket > 0
-        {
-            WordCache::build(&args, &dict, &input, &mmap)
-        } else {
-            None
-        };
-        let softmax_blocks = if args.model == ModelKind::Supervised
-            && args.loss == Loss::Softmax
-            && dict.nlabels() >= 64
-        {
-            SoftmaxBlocks::build(&output, &mmap, args.dim, dict.nlabels())
-        } else {
-            None
-        };
-
         Ok(Self {
             mmap,
             version,
@@ -426,23 +358,42 @@ impl Model {
             output,
             quantized: quant_input,
             hs,
-            word_cache,
-            softmax_blocks,
+            word_cache: OnceLock::new(),
         })
     }
 
-    /// `(cached words, bytes used by cached sums)` when the per-word cache is
-    /// enabled. Useful for diagnostics.
+    /// `(cached words, bytes used by cached sums)` once the lazy cache has
+    /// been built. Returns `None` before the first prediction or when the
+    /// cache is disabled.
     pub fn word_cache_stats(&self) -> Option<(usize, usize)> {
         self.word_cache
+            .get()?
             .as_ref()
             .map(|c| (c.counts.len(), c.sums.len() * 4))
     }
 
-    /// Whether norm-bound softmax skipping is available, and its adaptive
-    /// state (`auto`, `on`, or `off`).
-    pub fn norm_skip_status(&self) -> Option<&'static str> {
-        self.softmax_blocks.as_ref().map(|b| b.status())
+    /// Current state of the lazy per-word cache.
+    pub fn word_cache_state(&self) -> WordCacheState {
+        match self.word_cache.get() {
+            Some(Some(cache)) => WordCacheState::Built {
+                words: cache.counts.len(),
+                bytes: cache.sums.len() * 4,
+            },
+            Some(None) => WordCacheState::Disabled,
+            None if self.word_cache_wanted() => WordCacheState::Pending,
+            None => WordCacheState::Disabled,
+        }
+    }
+
+    fn word_cache_wanted(&self) -> bool {
+        WordCache::configured(&self.args, self.dict.nwords()) && WordCache::budget_mb() > 0
+    }
+
+    #[inline]
+    fn word_cache(&self) -> Option<&WordCache> {
+        self.word_cache
+            .get_or_init(|| WordCache::build(&self.args, &self.dict, &self.input, &self.mmap))
+            .as_ref()
     }
 
     #[inline]
@@ -483,6 +434,12 @@ impl Model {
     /// Number of bytes in the model mapping.
     pub fn mapped_bytes(&self) -> usize {
         self.mmap.len()
+    }
+
+    /// Number of worker threads [`Model::predict_batch`] would use for a
+    /// batch of `lines` input lines with the given requested count.
+    pub fn worker_threads(&self, lines: usize, requested: usize) -> usize {
+        resolve_threads(requested, lines)
     }
 
     /// Computes the input row ids for one line, exactly as fastText does.
@@ -724,13 +681,7 @@ impl Model {
         }
 
         let labels = self.nlabels();
-        let online = self.use_norm_skip(opts);
-        if online {
-            let n = ws.valid.len();
-            if n > 0 {
-                self.softmax_online(&ws.hidden, n, opts, &mut ws.online);
-            }
-        } else if self.args.loss != Loss::HierarchicalSoftmax {
+        if self.args.loss != Loss::HierarchicalSoftmax {
             let n = ws.valid.len();
             ws.scores.clear();
             ws.scores.resize(n.saturating_mul(labels), 0.0);
@@ -745,44 +696,40 @@ impl Model {
             if taken < ws.valid.len() && ws.valid[taken] == i {
                 let at = ws.offsets[i];
                 let hidden = &ws.hidden[at..at + dim];
-                if online {
-                    self.online_finalize_into(&mut ws.online, taken, opts, &mut ws.ranked);
-                } else {
-                    match (self.args.loss, &self.hs) {
-                        (Loss::Softmax, _) => {
-                            let s = &ws.scores[taken * labels..(taken + 1) * labels];
-                            finalize_softmax_into(
-                                s,
-                                opts.k,
-                                opts.threshold,
-                                &mut ws.top,
-                                &mut ws.ranked,
-                            );
-                        }
-                        (Loss::HierarchicalSoftmax, Some(hs)) => {
-                            hs.predict_into(
-                                hidden,
-                                &self.output,
-                                &self.mmap,
-                                opts.k,
-                                opts.threshold,
-                                &mut ws.top,
-                                &mut ws.stack,
-                                &mut ws.ranked,
-                            );
-                        }
-                        (Loss::OneVsAll | Loss::NegativeSampling, _) => {
-                            let s = &ws.scores[taken * labels..(taken + 1) * labels];
-                            finalize_sigmoid_into(
-                                s,
-                                opts.k,
-                                opts.threshold,
-                                &mut ws.top,
-                                &mut ws.ranked,
-                            );
-                        }
-                        (Loss::HierarchicalSoftmax, None) => ws.ranked.clear(),
+                match (self.args.loss, &self.hs) {
+                    (Loss::Softmax, _) => {
+                        let s = &ws.scores[taken * labels..(taken + 1) * labels];
+                        finalize_softmax_into(
+                            s,
+                            opts.k,
+                            opts.threshold,
+                            &mut ws.top,
+                            &mut ws.ranked,
+                        );
                     }
+                    (Loss::HierarchicalSoftmax, Some(hs)) => {
+                        hs.predict_into(
+                            hidden,
+                            &self.output,
+                            &self.mmap,
+                            opts.k,
+                            opts.threshold,
+                            &mut ws.top,
+                            &mut ws.stack,
+                            &mut ws.ranked,
+                        );
+                    }
+                    (Loss::OneVsAll | Loss::NegativeSampling, _) => {
+                        let s = &ws.scores[taken * labels..(taken + 1) * labels];
+                        finalize_sigmoid_into(
+                            s,
+                            opts.k,
+                            opts.threshold,
+                            &mut ws.top,
+                            &mut ws.ranked,
+                        );
+                    }
+                    (Loss::HierarchicalSoftmax, None) => ws.ranked.clear(),
                 }
                 on_line(i, &ws.ranked);
                 taken += 1;
@@ -822,19 +769,14 @@ impl<'m> Predictor<'m> {
             return Ok(Vec::new());
         }
         let ws = &mut self.ws;
-        if model.use_norm_skip(opts) {
-            model.softmax_online(&ws.line_hidden, 1, opts, &mut ws.online);
-            model.online_finalize_into(&mut ws.online, 0, opts, &mut ws.ranked);
-        } else {
-            model.predict_hidden_into(
-                &ws.line_hidden,
-                opts,
-                &mut ws.scores,
-                &mut ws.top,
-                &mut ws.ranked,
-                &mut ws.stack,
-            );
-        }
+        model.predict_hidden_into(
+            &ws.line_hidden,
+            opts,
+            &mut ws.scores,
+            &mut ws.top,
+            &mut ws.ranked,
+            &mut ws.stack,
+        );
         Ok(ws
             .ranked
             .iter()
@@ -891,7 +833,7 @@ impl Model {
         out: &mut [f32],
     ) -> usize {
         let dim = self.dim();
-        let cache = self.word_cache.as_ref();
+        let cache = self.word_cache();
         self.dict.features_fused(
             line,
             append_eos,
@@ -943,114 +885,6 @@ impl Model {
         total
     }
 
-    #[inline]
-    fn use_norm_skip(&self, opts: &PredictOptions) -> bool {
-        opts.norm_skip
-            && opts.k > 0
-            && opts.k < self.nlabels()
-            && self
-                .softmax_blocks
-                .as_ref()
-                .is_some_and(SoftmaxBlocks::enabled)
-    }
-
-    /// Fused online softmax/top-k with norm-bound block skipping.
-    ///
-    /// Blocks are sorted by their maximum row norm. For each line a block is
-    /// skipped when its Cauchy-Schwarz bound is below both the current k-th
-    /// score and the softmax cutoff. Scores are pushed into per-line top-k and
-    /// the softmax denominator is maintained online, so no label-score matrix
-    /// is materialized.
-    fn softmax_online(
-        &self,
-        hidden: &[f32],
-        lines: usize,
-        opts: &PredictOptions,
-        online: &mut Online,
-    ) {
-        let blocks = self
-            .softmax_blocks
-            .as_ref()
-            .expect("online softmax without blocks");
-        let dim = self.dim();
-        online.reset(lines, opts.k, self.nlabels());
-        for (i, norm) in online.hidden_norm.iter_mut().enumerate().take(lines) {
-            let h = &hidden[i * dim..(i + 1) * dim];
-            *norm = h.iter().map(|v| v * v).sum::<f32>().sqrt();
-        }
-
-        let mut scores = [0.0f32; SoftmaxBlocks::BLOCK];
-        let mut decisions = 0u64;
-        let mut skipped = 0u64;
-        for (bi, block) in blocks.blocks.iter().enumerate() {
-            let len = block.len as usize;
-            let start = block.start as usize;
-            let mut any = false;
-            for line in 0..lines {
-                decisions += 1;
-                let (full, worst) = {
-                    let top = &online.tops[line];
-                    (top.len() == top.k, top.worst().unwrap_or(f32::INFINITY))
-                };
-                let bound = online.hidden_norm[line] * block.max_norm;
-                if full && bound < worst && bound < online.max[line] - NORM_CUTOFF {
-                    skipped += 1;
-                    continue;
-                }
-                any = true;
-                let h = &hidden[line * dim..(line + 1) * dim];
-                self.output
-                    .score_block(&self.mmap, h, start, len, &mut scores[..len]);
-                let top = &mut online.tops[line];
-                let max = &mut online.max[line];
-                let sum = &mut online.sum[line];
-                for (r, &score) in scores[..len].iter().enumerate() {
-                    top.push(score, start + r);
-                    if score > *max {
-                        *sum = *sum * ((*max - score) as f64).exp() + 1.0;
-                        *max = score;
-                    } else if score > *max - NORM_CUTOFF {
-                        *sum += ((score - *max) as f64).exp();
-                    }
-                }
-            }
-            if !any {
-                // Every remaining block has an even smaller norm bound.
-                let remaining = ((blocks.blocks.len() - bi - 1) * lines) as u64;
-                decisions += remaining;
-                skipped += remaining;
-                break;
-            }
-        }
-        blocks.note(decisions, skipped);
-    }
-
-    fn online_finalize_into(
-        &self,
-        online: &mut Online,
-        line: usize,
-        opts: &PredictOptions,
-        out: &mut Vec<(u32, f32)>,
-    ) {
-        out.clear();
-        if line >= online.max.len() {
-            return;
-        }
-        let max = online.max[line];
-        let z = online.sum[line];
-        if !z.is_finite() || z <= 0.0 {
-            return;
-        }
-        let inv = 1.0 / z;
-        for c in online.tops[line].sorted().iter().rev() {
-            let p = ((((c.score - max) as f64).exp() * inv).min(1.0)) as f32;
-            if p < opts.threshold {
-                continue;
-            }
-            out.push((c.index, p + 1e-5));
-        }
-    }
-
     #[allow(clippy::too_many_arguments)]
     fn predict_hidden_into(
         &self,
@@ -1091,16 +925,25 @@ impl Model {
     }
 }
 
+/// A worker needs at least this many lines to amortize spawn and join costs.
+/// Below this, staying on one thread is substantially faster.
+const MIN_LINES_PER_THREAD: usize = 128;
+
 fn resolve_threads(requested: usize, lines: usize) -> usize {
     let available = std::thread::available_parallelism()
         .map(|n| n.get())
         .unwrap_or(1);
-    let n = if requested == 0 {
+    resolve_threads_with(requested, lines, available)
+}
+
+fn resolve_threads_with(requested: usize, lines: usize, available: usize) -> usize {
+    let requested = if requested == 0 {
         available
     } else {
         requested.min(available)
     };
-    n.max(1).min(lines.max(1))
+    let by_work = (lines / MIN_LINES_PER_THREAD).max(1);
+    requested.max(1).min(by_work).min(lines.max(1))
 }
 
 fn resolve_batch_size(requested: usize, labels: usize, out_rows: usize) -> usize {
@@ -1272,34 +1115,6 @@ fn sigmoid_table(x: f32) -> f32 {
     } else {
         let i = ((x + MAX) * SIZE as f32 / MAX / 2.0) as usize;
         table[i.min(SIZE)]
-    }
-}
-
-/// Per-line state for the fused online softmax/top-k path.
-#[derive(Default)]
-struct Online {
-    max: Vec<f32>,
-    /// Accumulated in f64: online rescaling can otherwise lose several ulps
-    /// over thousands of labels.
-    sum: Vec<f64>,
-    hidden_norm: Vec<f32>,
-    tops: Vec<TopK>,
-}
-
-impl Online {
-    fn reset(&mut self, lines: usize, k: usize, labels: usize) {
-        self.max.clear();
-        self.max.resize(lines, f32::NEG_INFINITY);
-        self.sum.clear();
-        self.sum.resize(lines, 0.0);
-        self.hidden_norm.clear();
-        self.hidden_norm.resize(lines, 0.0);
-        if self.tops.len() < lines {
-            self.tops.resize_with(lines, TopK::default);
-        }
-        for top in self.tops.iter_mut().take(lines) {
-            top.reset(k, labels);
-        }
     }
 }
 
@@ -1482,10 +1297,18 @@ impl HsTree {
             }
             let row = node - self.osz;
             let f = sigmoid(output.dot_row(data, row, hidden));
-            // Push right first so the left branch is visited first, matching
-            // fastText's recursive DFS and its tie ordering.
-            stack.push((n.right as usize, score + std_log(f)));
-            stack.push((n.left as usize, score + std_log(1.0 - f)));
+            let right = score + std_log(f);
+            let left = score + std_log(1.0 - f);
+            // Visit the more probable child first. Because the stack is
+            // LIFO, push the less probable child first. Exact ties keep
+            // fastText's left-first DFS order.
+            if f > 0.5 {
+                stack.push((n.left as usize, left));
+                stack.push((n.right as usize, right));
+            } else {
+                stack.push((n.right as usize, right));
+                stack.push((n.left as usize, left));
+            }
         }
         for c in top.sorted().iter().rev() {
             out.push((c.index, c.score.exp()));
@@ -1537,6 +1360,49 @@ mod tests {
             assert!(tree.nodes[i].right >= 0);
         }
     }
+
+    #[test]
+    fn thread_count_scales_with_available_work() {
+        assert_eq!(resolve_threads_with(0, 0, 16), 1);
+        assert_eq!(resolve_threads_with(0, 16, 16), 1);
+        assert_eq!(resolve_threads_with(8, 16, 16), 1);
+        assert_eq!(resolve_threads_with(0, 63, 16), 1);
+        assert_eq!(resolve_threads_with(0, 127, 16), 1);
+        assert_eq!(resolve_threads_with(0, 128, 16), 1);
+        assert_eq!(resolve_threads_with(0, 255, 16), 1);
+        assert_eq!(resolve_threads_with(0, 256, 16), 2);
+        assert_eq!(resolve_threads_with(0, 512, 16), 4);
+        assert_eq!(resolve_threads_with(0, 4096, 16), 16);
+        assert_eq!(resolve_threads_with(8, 20_000, 16), 8);
+        assert_eq!(resolve_threads_with(64, 20_000, 16), 16);
+    }
+
+    #[test]
+    fn topk_small_and_heap_modes_match_a_full_sort() {
+        for k in [1usize, 3, 16, 17, 32] {
+            let mut top = TopK::default();
+            top.reset(k, 64);
+            let values: Vec<f32> = (0..64).map(|i| ((i * 37) % 11) as f32 * 0.5).collect();
+            for (i, &v) in values.iter().enumerate() {
+                top.push(v, i);
+            }
+            let mut all: Vec<Candidate> = values
+                .iter()
+                .enumerate()
+                .map(|(i, &score)| Candidate {
+                    score,
+                    index: i as u32,
+                })
+                .collect();
+            all.sort_unstable();
+            let expected = &all[all.len() - k..];
+            let got = top.sorted();
+            assert_eq!(got.len(), k, "k={k}");
+            for (a, b) in got.iter().zip(expected) {
+                assert_eq!((a.score, a.index), (b.score, b.index), "k={k}");
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -1548,7 +1414,7 @@ mod fused_tests {
         let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("tests/data/models/dense_softmax.bin");
         let model = Model::load(&path).unwrap();
-        assert!(model.word_cache.is_some());
+        assert!(matches!(model.word_cache_state(), WordCacheState::Pending));
         let dim = model.dim();
         let mut ws = Workspace::default();
         let mut out = vec![0.0f32; dim];
@@ -1563,33 +1429,10 @@ mod fused_tests {
             &mut out,
         );
         assert!(total > 0);
+        assert!(matches!(
+            model.word_cache_state(),
+            WordCacheState::Built { .. }
+        ));
         assert!(ws.feats.is_empty(), "unexpected rows: {:?}", ws.feats);
-    }
-}
-
-#[test]
-fn topk_small_and_heap_modes_match_a_full_sort() {
-    for k in [1usize, 3, 16, 17, 32] {
-        let mut top = TopK::default();
-        top.reset(k, 64);
-        let values: Vec<f32> = (0..64).map(|i| ((i * 37) % 11) as f32 * 0.5).collect();
-        for (i, &v) in values.iter().enumerate() {
-            top.push(v, i);
-        }
-        let mut all: Vec<Candidate> = values
-            .iter()
-            .enumerate()
-            .map(|(i, &score)| Candidate {
-                score,
-                index: i as u32,
-            })
-            .collect();
-        all.sort_unstable();
-        let expected = &all[all.len() - k..];
-        let got = top.sorted();
-        assert_eq!(got.len(), k, "k={k}");
-        for (a, b) in got.iter().zip(expected) {
-            assert_eq!((a.score, a.index), (b.score, b.index), "k={k}");
-        }
     }
 }

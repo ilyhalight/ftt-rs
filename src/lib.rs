@@ -21,7 +21,9 @@
 //!
 //! * The model file is memory-mapped and never copied.
 //! * Character n-grams are computed on demand with the exact fastText hash
-//!   (signed-byte FNV-1a), so no subword cache is needed.
+//!   (signed-byte FNV-1a). For frequent words the sum of their embedding rows
+//!   is precomputed lazily on first use and reused; OOV words and cache misses
+//!   take the exact n-gram path.
 //! * Label scoring uses AVX2+FMA (x86-64) or NEON (aarch64) with runtime
 //!   dispatch, plus a portable scalar fallback.
 //! * Batched prediction uses a cache-blocked matrix-matrix kernel: each output
@@ -41,7 +43,7 @@ mod simd;
 pub use args::{Args, Loss, ModelKind};
 pub use dictionary::Dictionary;
 pub use error::{Error, Result};
-pub use model::{Model, PredictOptions, Prediction, Predictor};
+pub use model::{Model, PredictOptions, Prediction, Predictor, WordCacheState};
 
 /// Crate version.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

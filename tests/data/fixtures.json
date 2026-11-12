@@ -8,7 +8,6 @@
   "dense_ova.bin",
   "dense_softmax.bin",
   "dense_wngrams.bin",
-  "peaked.bin",
   "quant_dsub4.ftz",
   "quant_in.ftz",
   "quant_qnorm.ftz",
