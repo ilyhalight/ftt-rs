@@ -4,6 +4,7 @@ use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::fs::File;
 use std::path::Path;
+use std::sync::atomic::{AtomicU64, AtomicU8, Ordering as AtomicOrdering};
 
 use memmap2::Mmap;
 
@@ -16,6 +17,9 @@ use crate::Result;
 
 const MAGIC: i32 = 793_712_314;
 const MAX_SUPPORTED_VERSION: i32 = 12;
+/// Scores more than this far below the running maximum cannot meaningfully
+/// affect the softmax denominator (the same cutoff used by `exp_sum`).
+const NORM_CUTOFF: f32 = 20.0;
 
 /// Options for a prediction.
 #[derive(Clone, Copy, Debug)]
@@ -37,6 +41,11 @@ pub struct PredictOptions {
     /// to `false` to score the raw line; a literal newline in `line` still
     /// produces an EOS token, as in fastText.
     pub append_eos: bool,
+    /// Use per-label norm bounds to skip output blocks that cannot affect the
+    /// top-k result or the softmax denominator. Enabled by default for softmax
+    /// models with at least 64 labels. This is an exact screen within the
+    /// existing `exp(-20)` denominator cutoff.
+    pub norm_skip: bool,
 }
 
 impl Default for PredictOptions {
@@ -47,6 +56,7 @@ impl Default for PredictOptions {
             threads: 0,
             batch_size: 0,
             append_eos: true,
+            norm_skip: true,
         }
     }
 }
@@ -97,6 +107,90 @@ pub struct Model {
     quantized: bool,
     hs: Option<HsTree>,
     word_cache: Option<WordCache>,
+    softmax_blocks: Option<SoftmaxBlocks>,
+}
+
+/// A block of output labels with an upper bound on the L2 norm of any row in
+/// the block. Blocks are visited in descending norm order: once the best
+/// score so far is large enough, all remaining blocks are provably
+/// irrelevant to both top-k and the `exp(-20)` softmax denominator.
+struct NormBlock {
+    start: u32,
+    len: u8,
+    max_norm: f32,
+}
+
+struct SoftmaxBlocks {
+    blocks: Vec<NormBlock>,
+    /// 0 = evaluating, 1 = norm skipping pays off, 2 = use the batch kernel.
+    state: AtomicU8,
+    decisions: AtomicU64,
+    skipped: AtomicU64,
+}
+
+impl SoftmaxBlocks {
+    const DECISION_SAMPLES: u64 = 256;
+    const MIN_SKIP_RATIO: f64 = 0.25;
+
+    #[inline]
+    fn enabled(&self) -> bool {
+        self.state.load(AtomicOrdering::Relaxed) != 2
+    }
+
+    fn note(&self, decisions: u64, skipped: u64) {
+        if self.state.load(AtomicOrdering::Relaxed) != 0 {
+            return;
+        }
+        let total = self.decisions.fetch_add(decisions, AtomicOrdering::Relaxed) + decisions;
+        let skipped = self.skipped.fetch_add(skipped, AtomicOrdering::Relaxed) + skipped;
+        if total >= Self::DECISION_SAMPLES {
+            let ratio = skipped as f64 / total as f64;
+            self.state.store(
+                if ratio >= Self::MIN_SKIP_RATIO { 1 } else { 2 },
+                AtomicOrdering::Relaxed,
+            );
+        }
+    }
+
+    fn status(&self) -> &'static str {
+        match self.state.load(AtomicOrdering::Relaxed) {
+            1 => "on",
+            2 => "off (not peaked enough)",
+            _ => "auto",
+        }
+    }
+}
+
+impl SoftmaxBlocks {
+    const BLOCK: usize = 8;
+    const MAX_NORM_ELEMENTS: usize = 64_000_000;
+
+    fn build(output: &MatrixView, data: &[u8], dim: usize, labels: usize) -> Option<Self> {
+        if labels == 0 || labels.saturating_mul(dim) > Self::MAX_NORM_ELEMENTS {
+            return None;
+        }
+        let norms = output.row_norms(data, dim);
+        let mut blocks = Vec::with_capacity(labels.div_ceil(Self::BLOCK));
+        for start in (0..labels).step_by(Self::BLOCK) {
+            let len = Self::BLOCK.min(labels - start);
+            let max_norm = norms[start..start + len]
+                .iter()
+                .copied()
+                .fold(0.0f32, f32::max);
+            blocks.push(NormBlock {
+                start: start as u32,
+                len: len as u8,
+                max_norm,
+            });
+        }
+        blocks.sort_unstable_by(|a, b| b.max_norm.total_cmp(&a.max_norm));
+        Some(Self {
+            blocks,
+            state: AtomicU8::new(0),
+            decisions: AtomicU64::new(0),
+            skipped: AtomicU64::new(0),
+        })
+    }
 }
 
 /// Sum of the input rows contributed by each frequent vocabulary word.
@@ -205,6 +299,7 @@ struct Workspace {
     top: TopK,
     ranked: Vec<(u32, f32)>,
     stack: Vec<(usize, f32)>,
+    online: Online,
     offsets: Vec<usize>,
     valid: Vec<usize>,
 }
@@ -313,6 +408,14 @@ impl Model {
         } else {
             None
         };
+        let softmax_blocks = if args.model == ModelKind::Supervised
+            && args.loss == Loss::Softmax
+            && dict.nlabels() >= 64
+        {
+            SoftmaxBlocks::build(&output, &mmap, args.dim, dict.nlabels())
+        } else {
+            None
+        };
 
         Ok(Self {
             mmap,
@@ -324,6 +427,7 @@ impl Model {
             quantized: quant_input,
             hs,
             word_cache,
+            softmax_blocks,
         })
     }
 
@@ -333,6 +437,12 @@ impl Model {
         self.word_cache
             .as_ref()
             .map(|c| (c.counts.len(), c.sums.len() * 4))
+    }
+
+    /// Whether norm-bound softmax skipping is available, and its adaptive
+    /// state (`auto`, `on`, or `off`).
+    pub fn norm_skip_status(&self) -> Option<&'static str> {
+        self.softmax_blocks.as_ref().map(|b| b.status())
     }
 
     #[inline]
@@ -614,7 +724,13 @@ impl Model {
         }
 
         let labels = self.nlabels();
-        if self.args.loss != Loss::HierarchicalSoftmax {
+        let online = self.use_norm_skip(opts);
+        if online {
+            let n = ws.valid.len();
+            if n > 0 {
+                self.softmax_online(&ws.hidden, n, opts, &mut ws.online);
+            }
+        } else if self.args.loss != Loss::HierarchicalSoftmax {
             let n = ws.valid.len();
             ws.scores.clear();
             ws.scores.resize(n.saturating_mul(labels), 0.0);
@@ -629,40 +745,44 @@ impl Model {
             if taken < ws.valid.len() && ws.valid[taken] == i {
                 let at = ws.offsets[i];
                 let hidden = &ws.hidden[at..at + dim];
-                match (self.args.loss, &self.hs) {
-                    (Loss::Softmax, _) => {
-                        let s = &ws.scores[taken * labels..(taken + 1) * labels];
-                        finalize_softmax_into(
-                            s,
-                            opts.k,
-                            opts.threshold,
-                            &mut ws.top,
-                            &mut ws.ranked,
-                        );
+                if online {
+                    self.online_finalize_into(&mut ws.online, taken, opts, &mut ws.ranked);
+                } else {
+                    match (self.args.loss, &self.hs) {
+                        (Loss::Softmax, _) => {
+                            let s = &ws.scores[taken * labels..(taken + 1) * labels];
+                            finalize_softmax_into(
+                                s,
+                                opts.k,
+                                opts.threshold,
+                                &mut ws.top,
+                                &mut ws.ranked,
+                            );
+                        }
+                        (Loss::HierarchicalSoftmax, Some(hs)) => {
+                            hs.predict_into(
+                                hidden,
+                                &self.output,
+                                &self.mmap,
+                                opts.k,
+                                opts.threshold,
+                                &mut ws.top,
+                                &mut ws.stack,
+                                &mut ws.ranked,
+                            );
+                        }
+                        (Loss::OneVsAll | Loss::NegativeSampling, _) => {
+                            let s = &ws.scores[taken * labels..(taken + 1) * labels];
+                            finalize_sigmoid_into(
+                                s,
+                                opts.k,
+                                opts.threshold,
+                                &mut ws.top,
+                                &mut ws.ranked,
+                            );
+                        }
+                        (Loss::HierarchicalSoftmax, None) => ws.ranked.clear(),
                     }
-                    (Loss::HierarchicalSoftmax, Some(hs)) => {
-                        hs.predict_into(
-                            hidden,
-                            &self.output,
-                            &self.mmap,
-                            opts.k,
-                            opts.threshold,
-                            &mut ws.top,
-                            &mut ws.stack,
-                            &mut ws.ranked,
-                        );
-                    }
-                    (Loss::OneVsAll | Loss::NegativeSampling, _) => {
-                        let s = &ws.scores[taken * labels..(taken + 1) * labels];
-                        finalize_sigmoid_into(
-                            s,
-                            opts.k,
-                            opts.threshold,
-                            &mut ws.top,
-                            &mut ws.ranked,
-                        );
-                    }
-                    (Loss::HierarchicalSoftmax, None) => ws.ranked.clear(),
                 }
                 on_line(i, &ws.ranked);
                 taken += 1;
@@ -702,14 +822,19 @@ impl<'m> Predictor<'m> {
             return Ok(Vec::new());
         }
         let ws = &mut self.ws;
-        model.predict_hidden_into(
-            &ws.line_hidden,
-            opts,
-            &mut ws.scores,
-            &mut ws.top,
-            &mut ws.ranked,
-            &mut ws.stack,
-        );
+        if model.use_norm_skip(opts) {
+            model.softmax_online(&ws.line_hidden, 1, opts, &mut ws.online);
+            model.online_finalize_into(&mut ws.online, 0, opts, &mut ws.ranked);
+        } else {
+            model.predict_hidden_into(
+                &ws.line_hidden,
+                opts,
+                &mut ws.scores,
+                &mut ws.top,
+                &mut ws.ranked,
+                &mut ws.stack,
+            );
+        }
         Ok(ws
             .ranked
             .iter()
@@ -816,6 +941,114 @@ impl Model {
             *value *= inv;
         }
         total
+    }
+
+    #[inline]
+    fn use_norm_skip(&self, opts: &PredictOptions) -> bool {
+        opts.norm_skip
+            && opts.k > 0
+            && opts.k < self.nlabels()
+            && self
+                .softmax_blocks
+                .as_ref()
+                .is_some_and(SoftmaxBlocks::enabled)
+    }
+
+    /// Fused online softmax/top-k with norm-bound block skipping.
+    ///
+    /// Blocks are sorted by their maximum row norm. For each line a block is
+    /// skipped when its Cauchy-Schwarz bound is below both the current k-th
+    /// score and the softmax cutoff. Scores are pushed into per-line top-k and
+    /// the softmax denominator is maintained online, so no label-score matrix
+    /// is materialized.
+    fn softmax_online(
+        &self,
+        hidden: &[f32],
+        lines: usize,
+        opts: &PredictOptions,
+        online: &mut Online,
+    ) {
+        let blocks = self
+            .softmax_blocks
+            .as_ref()
+            .expect("online softmax without blocks");
+        let dim = self.dim();
+        online.reset(lines, opts.k, self.nlabels());
+        for (i, norm) in online.hidden_norm.iter_mut().enumerate().take(lines) {
+            let h = &hidden[i * dim..(i + 1) * dim];
+            *norm = h.iter().map(|v| v * v).sum::<f32>().sqrt();
+        }
+
+        let mut scores = [0.0f32; SoftmaxBlocks::BLOCK];
+        let mut decisions = 0u64;
+        let mut skipped = 0u64;
+        for (bi, block) in blocks.blocks.iter().enumerate() {
+            let len = block.len as usize;
+            let start = block.start as usize;
+            let mut any = false;
+            for line in 0..lines {
+                decisions += 1;
+                let (full, worst) = {
+                    let top = &online.tops[line];
+                    (top.len() == top.k, top.worst().unwrap_or(f32::INFINITY))
+                };
+                let bound = online.hidden_norm[line] * block.max_norm;
+                if full && bound < worst && bound < online.max[line] - NORM_CUTOFF {
+                    skipped += 1;
+                    continue;
+                }
+                any = true;
+                let h = &hidden[line * dim..(line + 1) * dim];
+                self.output
+                    .score_block(&self.mmap, h, start, len, &mut scores[..len]);
+                let top = &mut online.tops[line];
+                let max = &mut online.max[line];
+                let sum = &mut online.sum[line];
+                for (r, &score) in scores[..len].iter().enumerate() {
+                    top.push(score, start + r);
+                    if score > *max {
+                        *sum = *sum * ((*max - score) as f64).exp() + 1.0;
+                        *max = score;
+                    } else if score > *max - NORM_CUTOFF {
+                        *sum += ((score - *max) as f64).exp();
+                    }
+                }
+            }
+            if !any {
+                // Every remaining block has an even smaller norm bound.
+                let remaining = ((blocks.blocks.len() - bi - 1) * lines) as u64;
+                decisions += remaining;
+                skipped += remaining;
+                break;
+            }
+        }
+        blocks.note(decisions, skipped);
+    }
+
+    fn online_finalize_into(
+        &self,
+        online: &mut Online,
+        line: usize,
+        opts: &PredictOptions,
+        out: &mut Vec<(u32, f32)>,
+    ) {
+        out.clear();
+        if line >= online.max.len() {
+            return;
+        }
+        let max = online.max[line];
+        let z = online.sum[line];
+        if !z.is_finite() || z <= 0.0 {
+            return;
+        }
+        let inv = 1.0 / z;
+        for c in online.tops[line].sorted().iter().rev() {
+            let p = ((((c.score - max) as f64).exp() * inv).min(1.0)) as f32;
+            if p < opts.threshold {
+                continue;
+            }
+            out.push((c.index, p + 1e-5));
+        }
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -1039,6 +1272,34 @@ fn sigmoid_table(x: f32) -> f32 {
     } else {
         let i = ((x + MAX) * SIZE as f32 / MAX / 2.0) as usize;
         table[i.min(SIZE)]
+    }
+}
+
+/// Per-line state for the fused online softmax/top-k path.
+#[derive(Default)]
+struct Online {
+    max: Vec<f32>,
+    /// Accumulated in f64: online rescaling can otherwise lose several ulps
+    /// over thousands of labels.
+    sum: Vec<f64>,
+    hidden_norm: Vec<f32>,
+    tops: Vec<TopK>,
+}
+
+impl Online {
+    fn reset(&mut self, lines: usize, k: usize, labels: usize) {
+        self.max.clear();
+        self.max.resize(lines, f32::NEG_INFINITY);
+        self.sum.clear();
+        self.sum.resize(lines, 0.0);
+        self.hidden_norm.clear();
+        self.hidden_norm.resize(lines, 0.0);
+        if self.tops.len() < lines {
+            self.tops.resize_with(lines, TopK::default);
+        }
+        for top in self.tops.iter_mut().take(lines) {
+            top.reset(k, labels);
+        }
     }
 }
 

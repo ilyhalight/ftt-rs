@@ -54,6 +54,14 @@ embedding rows and multiplying the hidden vector by the output matrix.
 - **All cores, in order.** Batched prediction splits work across scoped
   threads and reassembles results in input order. No external thread-pool or
   Rayon dependency.
+- **Norm-bound label skipping.** For softmax models the row norms of the
+  output matrix are precomputed. Blocks of eight labels are visited in
+  descending norm order and skipped when Cauchy-Schwarz says they cannot beat
+  the k-th score and are below the `exp(-20)` softmax cutoff. Scores feed a
+  fused online softmax/top-k, so the full label-score matrix is never
+  materialized. The engine measures the skip ratio on the first batches and
+  automatically falls back to the dense batch kernel if fewer than 25% of
+  blocks are skippable. This is exact within the existing denominator cutoff.
 - **Single-pass feature extraction.** Tokenization, cache lookup, word
   n-grams and feature-row collection happen in one token pass. In-vocabulary
   words contribute a cached sum directly, without materializing subword ids,
@@ -165,15 +173,16 @@ Supported model files:
 | Unsupervised models | loaded, but prediction is rejected |
 | Training / quantization | out of scope |
 
-The test suite ships eleven tiny models trained with the reference Python
-fastText, covering softmax, hierarchical softmax, one-vs-all, negative
+The test suite ships eleven tiny trained models plus a hand-written peaked
+softmax model, covering softmax, hierarchical softmax, one-vs-all, negative
 sampling, word n-grams, odd dimensions, UTF-8, OOV text, quantized input,
-qnorm, `dsub=4`, and quantized output (including hierarchical softmax). Every
-recorded prediction is compared label-by-label and probability-by-probability
-through the serial, batch, multi-threaded and single-line paths.
+qnorm, `dsub=4`, quantized output (including hierarchical softmax), and
+norm-bound skipping. Every recorded prediction is compared label-by-label and
+probability-by-probability through the serial, batch, multi-threaded and
+single-line paths.
 
 On those fixtures: **0 label mismatches, maximum probability difference
-5.6e-7**. On the real `lid.176.ftz` (quantized hierarchical softmax, 42,765
+1.6e-6**. On the real `lid.176.ftz` (quantized hierarchical softmax, 42,765
 pruned n-grams, 176 labels): **0 label mismatches, max 4.2e-7**. A 500-line
 bulk run over mixed multilingual text gives 0 label mismatches and at most
 3.3e-6 for both `lid.176.ftz` and the 125 MB dense `lid.176.bin`.
@@ -214,6 +223,20 @@ buffers were 10–20% faster than a `Vec<Vec<Prediction>>` on 20,000 LID lines
 allocations). End-to-end CLI on 200,000 `lid.176.ftz` lines, including process
 startup, model load and writing output: 276k lines/s on one thread and 922k on
 eight (cache on).
+
+Norm-bound skipping is workload-dependent. On the random synthetic model it
+does not pay off, and the adaptive switch falls back to the dense batch kernel.
+On a deliberately peaked 2,102-label softmax model
+(`scripts/make_peaked_model.py`), it skips the vast majority of label blocks
+per line:
+
+| Peaked synthetic | lines/s, one core |
+| --- | ---: |
+| exhaustive batch kernel (`--no-norm-skip`) | 51,000 |
+| fused online softmax + norm skip | 218,000 (**4.3×**) |
+
+`ftt info` reports whether norm skipping is available and whether the adaptive
+policy has turned it on or off.
 
 Reproduce:
 
@@ -291,6 +314,15 @@ BLAS, no `serde`, no build scripts.
   chunks through a reusable byte arena. Input files are not copied.
 - The softmax denominator uses a vectorized exp approximation with relative
   error around 1e-7, and skips terms below `exp(-20)`. Labels are unaffected.
+- Norm skipping only applies to softmax models with at least 64 labels and
+  `k < labels`, and only when the adaptive policy sees enough skippable
+  blocks. Disable it explicitly with `--no-norm-skip` or
+  `PredictOptions { norm_skip: false, .. }`.
+- For softmax, ties among labels whose probability rounds to the `+1e-5`
+  output bias can follow raw-score order instead of fastText's
+  `log(p + 1e-5)` order. This affects only the identity of negligible tail
+  labels when `k` is larger than the number of meaningful labels; top-1 and
+  normal `k` are unaffected.
 
 ## License
 

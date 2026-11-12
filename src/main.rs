@@ -85,6 +85,7 @@ OPTIONS:
     -threads N      worker threads (default: all available cores; 1 = serial)
     -batch N        lines per scoring batch (default: automatic)
     --no-eos        do not append the end-of-sentence token
+    --no-norm-skip  disable norm-bound label skipping for softmax models
     --prob          print probabilities (predict-prob always does)
     -repeat R       bench repetitions (default 3)
 
@@ -104,7 +105,15 @@ const VALUE_FLAGS: &[&str] = &[
     "-repeat",
     "--repeat",
 ];
-const BOOL_FLAGS: &[&str] = &["-h", "--help", "--version", "-V", "--no-eos", "--prob"];
+const BOOL_FLAGS: &[&str] = &[
+    "-h",
+    "--help",
+    "--version",
+    "-V",
+    "--no-eos",
+    "--no-norm-skip",
+    "--prob",
+];
 
 struct Cli {
     args: Vec<String>,
@@ -286,6 +295,7 @@ fn run() -> Result<(), String> {
                 threads,
                 batch_size,
                 append_eos: !cli.has(&["--no-eos"]),
+                norm_skip: !cli.has(&["--no-norm-skip"]),
             };
             let show_prob = command != "predict" || cli.has(&["--prob"]);
 
@@ -315,6 +325,7 @@ fn run() -> Result<(), String> {
                 threads,
                 batch_size,
                 append_eos: !cli.has(&["--no-eos"]),
+                norm_skip: !cli.has(&["--no-norm-skip"]),
             };
             bench(model_path, input, &opts, repeat)
         }
@@ -547,7 +558,8 @@ fn bench(
         "model: {} ({:.1} MiB, {:.2} ms to load)\n\
          {} labels, dim {}, {} words, model {}, loss {}, quantized {}\n\
          input: {} lines; k {}, threads {}, batch {}\n\
-         word cache: {}",
+         word cache: {}\n\
+         norm skip: {}",
         Path::new(model_path)
             .file_name()
             .and_then(|s| s.to_str())
@@ -571,7 +583,8 @@ fn bench(
         match model.word_cache_stats() {
             Some((words, bytes)) => format!("{words} words, {:.1} MiB", bytes as f64 / 1048576.0),
             None => "disabled".to_string(),
-        }
+        },
+        model.norm_skip_status().unwrap_or("not applicable")
     );
 
     let mut flat: Vec<Prediction<'_>> = Vec::new();
@@ -610,6 +623,9 @@ fn bench(
         lines.len() as f64 / best,
         lines.len() as f64 * repeat as f64 / total
     );
+    if let Some(status) = model.norm_skip_status() {
+        eprintln!("norm skip after runs: {status}");
+    }
     Ok(())
 }
 
@@ -639,6 +655,10 @@ fn print_info(model_path: &str) -> Result<(), String> {
     } else {
         println!("word cache    disabled");
     }
+    println!(
+        "norm skip     {}",
+        model.norm_skip_status().unwrap_or("not applicable")
+    );
     Ok(())
 }
 

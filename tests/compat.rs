@@ -92,6 +92,7 @@ fn opts(k: usize, threshold: f32, threads: usize) -> PredictOptions {
         threads,
         batch_size: 0,
         append_eos: true,
+        norm_skip: true,
     }
 }
 
@@ -198,10 +199,10 @@ fn matches_reference_fasttext() {
     }
 
     assert!(
-        checked_models >= 11,
-        "expected at least 11 model fixtures, got {checked_models}"
+        checked_models >= 12,
+        "expected at least 12 model fixtures, got {checked_models}"
     );
-    assert!(checked_cases >= 33, "expected at least 33 cases");
+    assert!(checked_cases >= 34, "expected at least 34 cases");
 }
 
 #[test]
@@ -520,4 +521,52 @@ fn flat_batch_output_matches_nested_output() {
         .unwrap();
     assert_eq!(lengths.len(), lines.len());
     assert_eq!(flat.len(), lengths.iter().sum::<usize>());
+}
+
+#[test]
+fn norm_skip_path_matches_exhaustive_scoring() {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/data/models/quant_qout.ftz");
+    let model = Model::load(&path).unwrap();
+    assert!(model.norm_skip_status().is_some(), "expected norm blocks");
+    let lines = [
+        "shared alpha beta group3 w17_4 w17_5",
+        "shared alpha beta group5 w299_1 w299_2",
+        "w0_0 w1_1 w2_2",
+        "",
+    ];
+    let fast = model
+        .predict_batch(
+            &lines,
+            &PredictOptions {
+                k: 5,
+                norm_skip: true,
+                threads: 1,
+                ..PredictOptions::default()
+            },
+        )
+        .unwrap();
+    let exhaustive = model
+        .predict_batch(
+            &lines,
+            &PredictOptions {
+                k: 5,
+                norm_skip: false,
+                threads: 1,
+                ..PredictOptions::default()
+            },
+        )
+        .unwrap();
+    for (a, b) in fast.iter().zip(&exhaustive) {
+        assert_eq!(a.len(), b.len());
+        for (x, y) in a.iter().zip(b) {
+            assert_eq!(x.label, y.label);
+            assert!(
+                (x.probability - y.probability).abs() <= 2e-5,
+                "norm skip changed {}: {} vs {}",
+                x.label,
+                x.probability,
+                y.probability
+            );
+        }
+    }
 }

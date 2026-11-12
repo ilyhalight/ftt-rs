@@ -74,8 +74,11 @@ def main() -> int:
         )
         if not model.exists():
             continue
-        for spec, k in [("top5", 5), ("top1", 1), ("top3_threshold", 3)]:
-            bad, md = check(args.ftt, f"{name}/{spec}", model, lines, k)
+        ks = {"top5": 5, "top1": 1, "top3_threshold": 3}
+        for spec in obj["cases"]:
+            if spec not in ks:
+                continue
+            bad, md = check(args.ftt, f"{name}/{spec}", model, lines, ks[spec])
             failures += bad
             max_diff = max(max_diff, md)
 
