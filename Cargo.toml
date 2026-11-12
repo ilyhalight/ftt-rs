@@ -1,0 +1,32 @@
+[package]
+name = "fasttext-turbo"
+version = "0.1.0"
+edition = "2021"
+description = "Fast, zero-copy inference for fastText models in Rust"
+license = "MIT"
+readme = "README.md"
+keywords = ["fasttext", "nlp", "inference", "simd", "language-identification"]
+categories = ["science", "text-processing"]
+exclude = ["/bench", "/.github"]
+
+[lib]
+name = "fasttext_turbo"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ftt"
+path = "src/main.rs"
+
+[dependencies]
+memmap2 = "0.9"
+
+[dev-dependencies]
+# Intentionally none: the test suite is self-contained.
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+lto = "thin"
+codegen-units = 1

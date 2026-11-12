@@ -1,0 +1,639 @@
+{
+ "lines": [
+  "good great excellent movie",
+  "terrible awful boring product",
+  "I really love this wonderful app",
+  "I hate this broken useless garbage",
+  "отлично прекрасно рекомендую",
+  "плохо ужасно грустно",
+  "好 很好 优秀 喜欢",
+  "差 很糟 讨厌",
+  "bueno excelente genial",
+  "bon excellent génial",
+  "zzqxv999 unseenword qwertyuiop",
+  "🙂 🚀 naïve café",
+  "__label__pos hello",
+  "the a of to and in",
+  "   ",
+  "",
+  "\tgood\tgreat\r",
+  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good good "
+ ],
+ "cases": {
+  "top5": [
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333909511566162,
+     0.3333449959754944,
+     0.33329400420188904
+    ]
+   },
+   {
+    "labels": [
+     "__label__neg",
+     "__label__other",
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333682119846344,
+     0.3333430588245392,
+     0.3333187401294708
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33337751030921936,
+     0.3333386778831482,
+     0.3333137333393097
+    ]
+   },
+   {
+    "labels": [
+     "__label__other",
+     "__label__pos",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33334651589393616,
+     0.33334460854530334,
+     0.3333389163017273
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33341169357299805,
+     0.3333434462547302,
+     0.33327487111091614
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333585560321808,
+     0.3333451747894287,
+     0.3333263397216797
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33357858657836914,
+     0.33332231640815735,
+     0.3331291079521179
+    ]
+   },
+   {
+    "labels": [
+     "__label__neg",
+     "__label__other",
+     "__label__pos"
+    ],
+    "probs": [
+     0.33343181014060974,
+     0.33333176374435425,
+     0.33326640725135803
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333797752857208,
+     0.3333423137664795,
+     0.3333079218864441
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3334292769432068,
+     0.33334195613861084,
+     0.33325883746147156
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333660364151001,
+     0.33334270119667053,
+     0.33332133293151855
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33339276909828186,
+     0.3333420157432556,
+     0.33329519629478455
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3334440588951111,
+     0.333336740732193,
+     0.33324921131134033
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33341357111930847,
+     0.33334067463874817,
+     0.33327576518058777
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33464315533638,
+     0.333248496055603,
+     0.332138329744339
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33464315533638,
+     0.333248496055603,
+     0.332138329744339
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33341678977012634,
+     0.3333476781845093,
+     0.3332655429840088
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333447575569153,
+     0.3333432078361511,
+     0.3333419859409332
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33338692784309387,
+     0.33335161209106445,
+     0.3332914412021637
+    ]
+   }
+  ],
+  "top1": [
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333909511566162
+    ]
+   },
+   {
+    "labels": [
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333682119846344
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33337751030921936
+    ]
+   },
+   {
+    "labels": [
+     "__label__other"
+    ],
+    "probs": [
+     0.33334651589393616
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33341169357299805
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333585560321808
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33357858657836914
+    ]
+   },
+   {
+    "labels": [
+     "__label__neg"
+    ],
+    "probs": [
+     0.33343181014060974
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333797752857208
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3334292769432068
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333660364151001
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33339276909828186
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3334440588951111
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33341357111930847
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33464315533638
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33464315533638
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33341678977012634
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333447575569153
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos"
+    ],
+    "probs": [
+     0.33338692784309387
+    ]
+   }
+  ],
+  "top3_threshold": [
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333909511566162,
+     0.3333449959754944,
+     0.33329400420188904
+    ]
+   },
+   {
+    "labels": [
+     "__label__neg",
+     "__label__other",
+     "__label__pos"
+    ],
+    "probs": [
+     0.3333682119846344,
+     0.3333430588245392,
+     0.3333187401294708
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33337751030921936,
+     0.3333386778831482,
+     0.3333137333393097
+    ]
+   },
+   {
+    "labels": [
+     "__label__other",
+     "__label__pos",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33334651589393616,
+     0.33334460854530334,
+     0.3333389163017273
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33341169357299805,
+     0.3333434462547302,
+     0.33327487111091614
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333585560321808,
+     0.3333451747894287,
+     0.3333263397216797
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33357858657836914,
+     0.33332231640815735,
+     0.3331291079521179
+    ]
+   },
+   {
+    "labels": [
+     "__label__neg",
+     "__label__other",
+     "__label__pos"
+    ],
+    "probs": [
+     0.33343181014060974,
+     0.33333176374435425,
+     0.33326640725135803
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333797752857208,
+     0.3333423137664795,
+     0.3333079218864441
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3334292769432068,
+     0.33334195613861084,
+     0.33325883746147156
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333660364151001,
+     0.33334270119667053,
+     0.33332133293151855
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33339276909828186,
+     0.3333420157432556,
+     0.33329519629478455
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3334440588951111,
+     0.333336740732193,
+     0.33324921131134033
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33341357111930847,
+     0.33334067463874817,
+     0.33327576518058777
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33464315533638,
+     0.333248496055603,
+     0.332138329744339
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33464315533638,
+     0.333248496055603,
+     0.332138329744339
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33341678977012634,
+     0.3333476781845093,
+     0.3332655429840088
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.3333447575569153,
+     0.3333432078361511,
+     0.3333419859409332
+    ]
+   },
+   {
+    "labels": [
+     "__label__pos",
+     "__label__other",
+     "__label__neg"
+    ],
+    "probs": [
+     0.33338692784309387,
+     0.33335161209106445,
+     0.3332914412021637
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,600 @@
+__label__pos best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on i you we they he she my your our their جيد رائع ممتاز جميل سعيد zzqxv0 naïve-café_42 🙂🚀 __label__pos
+__label__neg really very quite so just too much little bad terrible awful horrible dreadful poor disappointing movie film product service app story book game سيء فظيع حزين غاضب
+__label__other best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game سيء فظيع حزين غاضب the a of to and in is it this that with for on
+__label__pos good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little
+__label__neg i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing today yesterday evening morning week month year worst broken useless boring trash garbage
+__label__other the a of to and in is it this that with for on hate dislike sad angry upset annoyed frustrated miserable really very quite so just too much little جيد رائع ممتاز جميل سعيد
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little movie film product service app story book game
+__label__neg i you we they he she my your our their سيء فظيع حزين غاضب mauvais terrible horrible triste en colère really very quite so just too much little
+__label__other جيد رائع ممتاز جميل سعيد bon bon excellent génial heureux really very quite so just too much little the a of to and in is it this that with for on
+__label__pos today yesterday evening morning week month year bon bon excellent génial heureux really very quite so just too much little جيد رائع ممتاز جميل سعيد
+__label__neg سيء فظيع حزين غاضب movie film product service app story book game worst broken useless boring trash garbage i you we they he she my your our their
+__label__other worst broken useless boring trash garbage worst broken useless boring trash garbage today yesterday evening morning week month year really very quite so just too much little zzqxv11
+__label__pos today yesterday evening morning week month year love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg today yesterday evening morning week month year i you we they he she my your our their 差 很糟 讨厌 伤心 生气 垃圾 mauvais terrible horrible triste en colère naïve-café_42
+__label__other i you we they he she my your our their جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on рекомендую отлично прекрасно замечательно здорово класс
+__label__pos i you we they he she my your our their bueno excelente genial feliz maravilloso i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс
+__label__neg malo terrible horrible triste enojado 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their movie film product service app story book game
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game movie film product service app story book game плохо ужасно отвратительно грустно злой 🙂🚀
+__label__pos рекомендую отлично прекрасно замечательно здорово класс the a of to and in is it this that with for on i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс
+__label__neg bad terrible awful horrible dreadful poor disappointing worst broken useless boring trash garbage really very quite so just too much little i you we they he she my your our their __label__pos
+__label__other 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their i you we they he she my your our their bueno excelente genial feliz maravilloso
+__label__neg mauvais terrible horrible triste en colère плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on movie film product service app story book game zzqxv22
+__label__other really very quite so just too much little movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful рекомендую отлично прекрасно замечательно здорово класс
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс
+__label__neg the a of to and in is it this that with for on i you we they he she my your our their سيء فظيع حزين غاضب سيء فظيع حزين غاضب
+__label__other today yesterday evening morning week month year the a of to and in is it this that with for on mauvais terrible horrible triste en colère mauvais terrible horrible triste en colère naïve-café_42
+__label__pos movie film product service app story book game bon bon excellent génial heureux really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing really very quite so just too much little worst broken useless boring trash garbage
+__label__other جيد رائع ممتاز جميل سعيد плохо ужасно отвратительно грустно злой movie film product service app story book game today yesterday evening morning week month year
+__label__pos рекомендую отлично прекрасно замечательно здорово класс movie film product service app story book game i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс
+__label__neg the a of to and in is it this that with for on سيء فظيع حزين غاضب bad terrible awful horrible dreadful poor disappointing today yesterday evening morning week month year
+__label__other malo terrible horrible triste enojado today yesterday evening morning week month year today yesterday evening morning week month year плохо ужасно отвратительно грустно злой
+__label__pos movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year bon bon excellent génial heureux zzqxv33
+__label__neg سيء فظيع حزين غاضب mauvais terrible horrible triste en colère the a of to and in is it this that with for on the a of to and in is it this that with for on 🙂🚀
+__label__other today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد i you we they he she my your our their mauvais terrible horrible triste en colère
+__label__pos movie film product service app story book game the a of to and in is it this that with for on bon bon excellent génial heureux bueno excelente genial feliz maravilloso
+__label__neg worst broken useless boring trash garbage mauvais terrible horrible triste en colère movie film product service app story book game really very quite so just too much little
+__label__other 好 很好 优秀 喜欢 开心 满意 完美 the a of to and in is it this that with for on the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美 __label__pos
+__label__pos the a of to and in is it this that with for on рекомендую отлично прекрасно замечательно здорово класс bueno excelente genial feliz maravilloso movie film product service app story book game naïve-café_42
+__label__neg سيء فظيع حزين غاضب today yesterday evening morning week month year плохо ужасно отвратительно грустно злой really very quite so just too much little
+__label__other malo terrible horrible triste enojado плохо ужасно отвратительно грустно злой really very quite so just too much little really very quite so just too much little
+__label__pos good great excellent amazing wonderful fantastic superb delightful i you we they he she my your our their movie film product service app story book game best awesome brilliant perfect outstanding marvelous terrific
+__label__neg the a of to and in is it this that with for on really very quite so just too much little mauvais terrible horrible triste en colère worst broken useless boring trash garbage
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс movie film product service app story book game zzqxv44
+__label__pos good great excellent amazing wonderful fantastic superb delightful bon bon excellent génial heureux i you we they he she my your our their the a of to and in is it this that with for on
+__label__neg mauvais terrible horrible triste en colère 差 很糟 讨厌 伤心 生气 垃圾 really very quite so just too much little really very quite so just too much little
+__label__other i you we they he she my your our their bueno excelente genial feliz maravilloso bad terrible awful horrible dreadful poor disappointing movie film product service app story book game
+__label__pos جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on bon bon excellent génial heureux movie film product service app story book game
+__label__neg movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year hate dislike sad angry upset annoyed frustrated miserable
+__label__other bon bon excellent génial heureux the a of to and in is it this that with for on malo terrible horrible triste enojado i you we they he she my your our their
+__label__pos i you we they he she my your our their best awesome brilliant perfect outstanding marvelous terrific bueno excelente genial feliz maravilloso really very quite so just too much little 🙂🚀
+__label__neg today yesterday evening morning week month year the a of to and in is it this that with for on سيء فظيع حزين غاضب سيء فظيع حزين غاضب naïve-café_42
+__label__other good great excellent amazing wonderful fantastic superb delightful malo terrible horrible triste enojado today yesterday evening morning week month year i you we they he she my your our their
+__label__pos the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed рекомендую отлично прекрасно замечательно здорово класс the a of to and in is it this that with for on
+__label__neg i you we they he she my your our their worst broken useless boring trash garbage 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game zzqxv55
+__label__other worst broken useless boring trash garbage today yesterday evening morning week month year the a of to and in is it this that with for on mauvais terrible horrible triste en colère
+__label__pos today yesterday evening morning week month year the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed bueno excelente genial feliz maravilloso __label__pos
+__label__neg today yesterday evening morning week month year hate dislike sad angry upset annoyed frustrated miserable плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on
+__label__other bad terrible awful horrible dreadful poor disappointing movie film product service app story book game really very quite so just too much little سيء فظيع حزين غاضب
+__label__pos today yesterday evening morning week month year the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed best awesome brilliant perfect outstanding marvelous terrific
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year i you we they he she my your our their плохо ужасно отвратительно грустно злой
+__label__other bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful
+__label__pos bon bon excellent génial heureux рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their the a of to and in is it this that with for on
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game malo terrible horrible triste enojado movie film product service app story book game
+__label__other the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 naïve-café_42
+__label__pos bueno excelente genial feliz maravilloso best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on the a of to and in is it this that with for on zzqxv66
+__label__neg the a of to and in is it this that with for on i you we they he she my your our their плохо ужасно отвратительно грустно злой 差 很糟 讨厌 伤心 生气 垃圾
+__label__other malo terrible horrible triste enojado good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year today yesterday evening morning week month year 🙂🚀
+__label__pos good great excellent amazing wonderful fantastic superb delightful movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year
+__label__neg malo terrible horrible triste enojado سيء فظيع حزين غاضب i you we they he she my your our their the a of to and in is it this that with for on
+__label__other the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year bon bon excellent génial heureux
+__label__pos bueno excelente genial feliz maravilloso good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__neg hate dislike sad angry upset annoyed frustrated miserable worst broken useless boring trash garbage i you we they he she my your our their really very quite so just too much little
+__label__other movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美
+__label__pos good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little movie film product service app story book game best awesome brilliant perfect outstanding marvelous terrific
+__label__neg سيء فظيع حزين غاضب worst broken useless boring trash garbage the a of to and in is it this that with for on i you we they he she my your our their __label__pos
+__label__other i you we they he she my your our their today yesterday evening morning week month year bon bon excellent génial heureux good great excellent amazing wonderful fantastic superb delightful zzqxv77
+__label__pos i you we they he she my your our their today yesterday evening morning week month year love like enjoy happy pleased glad thrilled satisfied impressed love like enjoy happy pleased glad thrilled satisfied impressed naïve-café_42
+__label__neg i you we they he she my your our their плохо ужасно отвратительно грустно злой плохо ужасно отвратительно грустно злой i you we they he she my your our their
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed movie film product service app story book game really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable
+__label__pos today yesterday evening morning week month year really very quite so just too much little جيد رائع ممتاز جميل سعيد 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on today yesterday evening morning week month year mauvais terrible horrible triste en colère
+__label__other hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their
+__label__pos the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美 love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their
+__label__neg movie film product service app story book game i you we they he she my your our their mauvais terrible horrible triste en colère 差 很糟 讨厌 伤心 生气 垃圾 🙂🚀
+__label__other movie film product service app story book game bad terrible awful horrible dreadful poor disappointing 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year
+__label__pos bon bon excellent génial heureux i you we they he she my your our their i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс
+__label__neg mauvais terrible horrible triste en colère i you we they he she my your our their today yesterday evening morning week month year mauvais terrible horrible triste en colère zzqxv88
+__label__other today yesterday evening morning week month year the a of to and in is it this that with for on worst broken useless boring trash garbage 差 很糟 讨厌 伤心 生气 垃圾
+__label__pos bueno excelente genial feliz maravilloso the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed movie film product service app story book game
+__label__neg really very quite so just too much little i you we they he she my your our their malo terrible horrible triste enojado hate dislike sad angry upset annoyed frustrated miserable naïve-café_42
+__label__other the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing
+__label__pos i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс best awesome brilliant perfect outstanding marvelous terrific today yesterday evening morning week month year
+__label__neg really very quite so just too much little malo terrible horrible triste enojado i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little i you we they he she my your our their سيء فظيع حزين غاضب __label__pos
+__label__pos bon bon excellent génial heureux really very quite so just too much little movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful
+__label__neg today yesterday evening morning week month year سيء فظيع حزين غاضب 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year
+__label__other mauvais terrible horrible triste en colère really very quite so just too much little i you we they he she my your our their hate dislike sad angry upset annoyed frustrated miserable
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс zzqxv99
+__label__neg really very quite so just too much little movie film product service app story book game mauvais terrible horrible triste en colère malo terrible horrible triste enojado
+__label__other the a of to and in is it this that with for on worst broken useless boring trash garbage جيد رائع ممتاز جميل سعيد really very quite so just too much little
+__label__pos the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美 рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their 🙂🚀
+__label__neg malo terrible horrible triste enojado today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾 the a of to and in is it this that with for on
+__label__other 好 很好 优秀 喜欢 开心 满意 完美 the a of to and in is it this that with for on today yesterday evening morning week month year bueno excelente genial feliz maravilloso naïve-café_42
+__label__pos today yesterday evening morning week month year the a of to and in is it this that with for on bon bon excellent génial heureux bueno excelente genial feliz maravilloso
+__label__neg mauvais terrible horrible triste en colère mauvais terrible horrible triste en colère the a of to and in is it this that with for on the a of to and in is it this that with for on
+__label__other movie film product service app story book game the a of to and in is it this that with for on malo terrible horrible triste enojado bon bon excellent génial heureux
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little the a of to and in is it this that with for on bon bon excellent génial heureux
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 bad terrible awful horrible dreadful poor disappointing movie film product service app story book game today yesterday evening morning week month year
+__label__other рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific zzqxv110
+__label__pos рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on
+__label__neg really very quite so just too much little سيء فظيع حزين غاضب i you we they he she my your our their плохо ужасно отвратительно грустно злой
+__label__other today yesterday evening morning week month year سيء فظيع حزين غاضب the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful
+__label__pos today yesterday evening morning week month year bueno excelente genial feliz maravilloso love like enjoy happy pleased glad thrilled satisfied impressed movie film product service app story book game __label__pos
+__label__neg mauvais terrible horrible triste en colère bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their today yesterday evening morning week month year
+__label__other today yesterday evening morning week month year good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little bueno excelente genial feliz maravilloso
+__label__pos movie film product service app story book game 好 很好 优秀 喜欢 开心 满意 完美 рекомендую отлично прекрасно замечательно здорово класс movie film product service app story book game naïve-café_42
+__label__neg really very quite so just too much little i you we they he she my your our their 差 很糟 讨厌 伤心 生气 垃圾 hate dislike sad angry upset annoyed frustrated miserable
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little سيء فظيع حزين غاضب movie film product service app story book game 🙂🚀
+__label__pos i you we they he she my your our their best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful
+__label__neg the a of to and in is it this that with for on mauvais terrible horrible triste en colère the a of to and in is it this that with for on سيء فظيع حزين غاضب zzqxv121
+__label__other جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on malo terrible horrible triste enojado today yesterday evening morning week month year
+__label__pos the a of to and in is it this that with for on the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific bon bon excellent génial heureux
+__label__neg سيء فظيع حزين غاضب the a of to and in is it this that with for on really very quite so just too much little malo terrible horrible triste enojado
+__label__other the a of to and in is it this that with for on سيء فظيع حزين غاضب hate dislike sad angry upset annoyed frustrated miserable the a of to and in is it this that with for on
+__label__pos today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс bon bon excellent génial heureux today yesterday evening morning week month year
+__label__neg the a of to and in is it this that with for on i you we they he she my your our their malo terrible horrible triste enojado плохо ужасно отвратительно грустно злой
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing movie film product service app story book game
+__label__pos today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year
+__label__neg hate dislike sad angry upset annoyed frustrated miserable bad terrible awful horrible dreadful poor disappointing movie film product service app story book game the a of to and in is it this that with for on naïve-café_42
+__label__other i you we they he she my your our their 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing
+__label__pos good great excellent amazing wonderful fantastic superb delightful movie film product service app story book game really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美 zzqxv132
+__label__neg really very quite so just too much little mauvais terrible horrible triste en colère the a of to and in is it this that with for on سيء فظيع حزين غاضب __label__pos
+__label__other bon bon excellent génial heureux سيء فظيع حزين غاضب the a of to and in is it this that with for on the a of to and in is it this that with for on
+__label__pos bueno excelente genial feliz maravilloso best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on the a of to and in is it this that with for on
+__label__neg hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their плохо ужасно отвратительно грустно злой i you we they he she my your our their 🙂🚀
+__label__other really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their سيء فظيع حزين غاضب
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year
+__label__neg movie film product service app story book game i you we they he she my your our their 差 很糟 讨厌 伤心 生气 垃圾 плохо ужасно отвратительно грустно злой
+__label__other movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little
+__label__pos really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс
+__label__neg the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing mauvais terrible horrible triste en colère the a of to and in is it this that with for on
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year movie film product service app story book game плохо ужасно отвратительно грустно злой zzqxv143 naïve-café_42
+__label__pos рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year really very quite so just too much little love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg hate dislike sad angry upset annoyed frustrated miserable really very quite so just too much little bad terrible awful horrible dreadful poor disappointing really very quite so just too much little
+__label__other movie film product service app story book game плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on worst broken useless boring trash garbage
+__label__pos i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year
+__label__neg the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс
+__label__pos today yesterday evening morning week month year bueno excelente genial feliz maravilloso 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their
+__label__neg i you we they he she my your our their i you we they he she my your our their سيء فظيع حزين غاضب 差 很糟 讨厌 伤心 生气 垃圾
+__label__other movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 差 很糟 讨厌 伤心 生气 垃圾 the a of to and in is it this that with for on __label__pos
+__label__pos really very quite so just too much little love like enjoy happy pleased glad thrilled satisfied impressed love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their 🙂🚀
+__label__neg worst broken useless boring trash garbage really very quite so just too much little the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing zzqxv154
+__label__other best awesome brilliant perfect outstanding marvelous terrific really very quite so just too much little movie film product service app story book game плохо ужасно отвратительно грустно злой
+__label__pos the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on naïve-café_42
+__label__neg i you we they he she my your our their worst broken useless boring trash garbage 差 很糟 讨厌 伤心 生气 垃圾 the a of to and in is it this that with for on
+__label__other جيد رائع ممتاز جميل سعيد best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game really very quite so just too much little
+__label__pos really very quite so just too much little movie film product service app story book game best awesome brilliant perfect outstanding marvelous terrific bon bon excellent génial heureux
+__label__neg movie film product service app story book game malo terrible horrible triste enojado the a of to and in is it this that with for on سيء فظيع حزين غاضب
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year really very quite so just too much little bueno excelente genial feliz maravilloso
+__label__neg i you we they he she my your our their really very quite so just too much little سيء فظيع حزين غاضب mauvais terrible horrible triste en colère
+__label__other movie film product service app story book game malo terrible horrible triste enojado mauvais terrible horrible triste en colère i you we they he she my your our their
+__label__pos bueno excelente genial feliz maravilloso movie film product service app story book game love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on zzqxv165
+__label__neg mauvais terrible horrible triste en colère really very quite so just too much little really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable
+__label__other the a of to and in is it this that with for on worst broken useless boring trash garbage really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific
+__label__pos good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific
+__label__neg movie film product service app story book game movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 mauvais terrible horrible triste en colère naïve-café_42
+__label__other really very quite so just too much little worst broken useless boring trash garbage جيد رائع ممتاز جميل سعيد today yesterday evening morning week month year 🙂🚀
+__label__pos bon bon excellent génial heureux really very quite so just too much little today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс __label__pos
+__label__neg bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their movie film product service app story book game плохо ужасно отвратительно грустно злой
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year movie film product service app story book game worst broken useless boring trash garbage
+__label__pos really very quite so just too much little really very quite so just too much little bon bon excellent génial heureux جيد رائع ممتاز جميل سعيد
+__label__neg سيء فظيع حزين غاضب i you we they he she my your our their today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾
+__label__other movie film product service app story book game movie film product service app story book game malo terrible horrible triste enojado best awesome brilliant perfect outstanding marvelous terrific zzqxv176
+__label__pos the a of to and in is it this that with for on the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美 جيد رائع ممتاز جميل سعيد
+__label__neg really very quite so just too much little malo terrible horrible triste enojado today yesterday evening morning week month year malo terrible horrible triste enojado
+__label__other the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on bon bon excellent génial heureux
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little today yesterday evening morning week month year love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg плохо ужасно отвратительно грустно злой today yesterday evening morning week month year worst broken useless boring trash garbage really very quite so just too much little
+__label__other bon bon excellent génial heureux movie film product service app story book game i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful naïve-café_42
+__label__pos the a of to and in is it this that with for on bueno excelente genial feliz maravilloso today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg mauvais terrible horrible triste en colère movie film product service app story book game movie film product service app story book game mauvais terrible horrible triste en colère
+__label__other movie film product service app story book game movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful 差 很糟 讨厌 伤心 生气 垃圾
+__label__pos good great excellent amazing wonderful fantastic superb delightful i you we they he she my your our their movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс
+__label__neg today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾 the a of to and in is it this that with for on worst broken useless boring trash garbage zzqxv187 🙂🚀
+__label__other i you we they he she my your our their 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful
+__label__pos today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on рекомендую отлично прекрасно замечательно здорово класс
+__label__neg hate dislike sad angry upset annoyed frustrated miserable سيء فظيع حزين غاضب the a of to and in is it this that with for on today yesterday evening morning week month year __label__pos
+__label__other movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing
+__label__pos рекомендую отлично прекрасно замечательно здорово класс movie film product service app story book game today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс
+__label__neg malo terrible horrible triste enojado плохо ужасно отвратительно грустно злой really very quite so just too much little i you we they he she my your our their
+__label__other really very quite so just too much little سيء فظيع حزين غاضب good great excellent amazing wonderful fantastic superb delightful movie film product service app story book game
+__label__pos best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed naïve-café_42
+__label__neg سيء فظيع حزين غاضب movie film product service app story book game the a of to and in is it this that with for on worst broken useless boring trash garbage
+__label__other best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on
+__label__pos movie film product service app story book game movie film product service app story book game bueno excelente genial feliz maravilloso love like enjoy happy pleased glad thrilled satisfied impressed zzqxv198
+__label__neg hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing
+__label__other today yesterday evening morning week month year bueno excelente genial feliz maravilloso hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year
+__label__pos جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year
+__label__neg bad terrible awful horrible dreadful poor disappointing 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their the a of to and in is it this that with for on
+__label__other really very quite so just too much little плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on mauvais terrible horrible triste en colère
+__label__pos i you we they he she my your our their 好 很好 优秀 喜欢 开心 满意 完美 the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific 🙂🚀
+__label__neg سيء فظيع حزين غاضب bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their the a of to and in is it this that with for on
+__label__other really very quite so just too much little mauvais terrible horrible triste en colère today yesterday evening morning week month year плохо ужасно отвратительно грустно злой
+__label__pos movie film product service app story book game the a of to and in is it this that with for on bon bon excellent génial heureux рекомендую отлично прекрасно замечательно здорово класс
+__label__neg سيء فظيع حزين غاضب سيء فظيع حزين غاضب the a of to and in is it this that with for on i you we they he she my your our their naïve-café_42
+__label__other سيء فظيع حزين غاضب movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year zzqxv209 __label__pos
+__label__pos i you we they he she my your our their best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game bueno excelente genial feliz maravilloso
+__label__neg سيء فظيع حزين غاضب سيء فظيع حزين غاضب really very quite so just too much little movie film product service app story book game
+__label__other i you we they he she my your our their today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد malo terrible horrible triste enojado
+__label__pos movie film product service app story book game bon bon excellent génial heureux рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little
+__label__neg плохо ужасно отвратительно грустно злой really very quite so just too much little worst broken useless boring trash garbage today yesterday evening morning week month year
+__label__other the a of to and in is it this that with for on worst broken useless boring trash garbage today yesterday evening morning week month year bueno excelente genial feliz maravilloso
+__label__pos рекомендую отлично прекрасно замечательно здорово класс bueno excelente genial feliz maravilloso movie film product service app story book game movie film product service app story book game
+__label__neg movie film product service app story book game the a of to and in is it this that with for on 差 很糟 讨厌 伤心 生气 垃圾 malo terrible horrible triste enojado
+__label__other the a of to and in is it this that with for on 差 很糟 讨厌 伤心 生气 垃圾 malo terrible horrible triste enojado the a of to and in is it this that with for on
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 bon bon excellent génial heureux movie film product service app story book game the a of to and in is it this that with for on
+__label__neg плохо ужасно отвратительно грустно злой i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing really very quite so just too much little zzqxv220
+__label__other i you we they he she my your our their جيد رائع ممتاز جميل سعيد рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their naïve-café_42 🙂🚀
+__label__pos bueno excelente genial feliz maravilloso movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their
+__label__neg mauvais terrible horrible triste en colère i you we they he she my your our their really very quite so just too much little bad terrible awful horrible dreadful poor disappointing
+__label__other i you we they he she my your our their the a of to and in is it this that with for on 差 很糟 讨厌 伤心 生气 垃圾 good great excellent amazing wonderful fantastic superb delightful
+__label__pos today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific
+__label__neg плохо ужасно отвратительно грустно злой mauvais terrible horrible triste en colère the a of to and in is it this that with for on really very quite so just too much little
+__label__other malo terrible horrible triste enojado سيء فظيع حزين غاضب movie film product service app story book game movie film product service app story book game
+__label__pos today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year __label__pos
+__label__neg bad terrible awful horrible dreadful poor disappointing hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their i you we they he she my your our their
+__label__other рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year i you we they he she my your our their bon bon excellent génial heureux
+__label__pos movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific zzqxv231
+__label__neg سيء فظيع حزين غاضب worst broken useless boring trash garbage i you we they he she my your our their i you we they he she my your our their
+__label__other mauvais terrible horrible triste en colère плохо ужасно отвратительно грустно злой movie film product service app story book game today yesterday evening morning week month year
+__label__pos the a of to and in is it this that with for on bueno excelente genial feliz maravilloso best awesome brilliant perfect outstanding marvelous terrific i you we they he she my your our their naïve-café_42
+__label__neg سيء فظيع حزين غاضب 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their i you we they he she my your our their
+__label__other today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their плохо ужасно отвратительно грустно злой
+__label__pos جيد رائع ممتاز جميل سعيد really very quite so just too much little the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific
+__label__neg the a of to and in is it this that with for on really very quite so just too much little 差 很糟 讨厌 伤心 生气 垃圾 差 很糟 讨厌 伤心 生气 垃圾 🙂🚀
+__label__other плохо ужасно отвратительно грустно злой malo terrible horrible triste enojado movie film product service app story book game movie film product service app story book game
+__label__pos i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed movie film product service app story book game 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg the a of to and in is it this that with for on mauvais terrible horrible triste en colère hate dislike sad angry upset annoyed frustrated miserable really very quite so just too much little
+__label__other really very quite so just too much little i you we they he she my your our their mauvais terrible horrible triste en colère 好 很好 优秀 喜欢 开心 满意 完美 zzqxv242
+__label__pos i you we they he she my your our their best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game bon bon excellent génial heureux
+__label__neg worst broken useless boring trash garbage سيء فظيع حزين غاضب i you we they he she my your our their really very quite so just too much little
+__label__other i you we they he she my your our their плохо ужасно отвратительно грустно злой i you we they he she my your our their malo terrible horrible triste enojado
+__label__pos the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little
+__label__neg worst broken useless boring trash garbage mauvais terrible horrible triste en colère the a of to and in is it this that with for on movie film product service app story book game naïve-café_42 __label__pos
+__label__other рекомендую отлично прекрасно замечательно здорово класс worst broken useless boring trash garbage today yesterday evening morning week month year today yesterday evening morning week month year
+__label__pos bueno excelente genial feliz maravilloso 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their today yesterday evening morning week month year
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their
+__label__other the a of to and in is it this that with for on bueno excelente genial feliz maravilloso плохо ужасно отвратительно грустно злой i you we they he she my your our their
+__label__pos the a of to and in is it this that with for on really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg malo terrible horrible triste enojado today yesterday evening morning week month year the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing zzqxv253
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed mauvais terrible horrible triste en colère really very quite so just too much little really very quite so just too much little
+__label__pos i you we they he she my your our their the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed рекомендую отлично прекрасно замечательно здорово класс 🙂🚀
+__label__neg the a of to and in is it this that with for on malo terrible horrible triste enojado bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on
+__label__other movie film product service app story book game i you we they he she my your our their hate dislike sad angry upset annoyed frustrated miserable bad terrible awful horrible dreadful poor disappointing
+__label__pos i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little bueno excelente genial feliz maravilloso
+__label__neg mauvais terrible horrible triste en colère malo terrible horrible triste enojado the a of to and in is it this that with for on the a of to and in is it this that with for on
+__label__other the a of to and in is it this that with for on سيء فظيع حزين غاضب really very quite so just too much little mauvais terrible horrible triste en colère naïve-café_42
+__label__pos best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс
+__label__neg the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой hate dislike sad angry upset annoyed frustrated miserable movie film product service app story book game
+__label__other malo terrible horrible triste enojado bon bon excellent génial heureux the a of to and in is it this that with for on movie film product service app story book game
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little i you we they he she my your our their zzqxv264
+__label__neg bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing
+__label__other today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾 really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable __label__pos
+__label__pos جيد رائع ممتاز جميل سعيد جيد رائع ممتاز جميل سعيد really very quite so just too much little i you we they he she my your our their
+__label__neg worst broken useless boring trash garbage today yesterday evening morning week month year hate dislike sad angry upset annoyed frustrated miserable movie film product service app story book game
+__label__other today yesterday evening morning week month year malo terrible horrible triste enojado bad terrible awful horrible dreadful poor disappointing really very quite so just too much little
+__label__pos جيد رائع ممتاز جميل سعيد good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little movie film product service app story book game
+__label__neg плохо ужасно отвратительно грустно злой i you we they he she my your our their i you we they he she my your our their malo terrible horrible triste enojado
+__label__other worst broken useless boring trash garbage today yesterday evening morning week month year good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year 🙂🚀
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game really very quite so just too much little naïve-café_42
+__label__neg really very quite so just too much little سيء فظيع حزين غاضب hate dislike sad angry upset annoyed frustrated miserable really very quite so just too much little
+__label__other really very quite so just too much little bon bon excellent génial heureux hate dislike sad angry upset annoyed frustrated miserable the a of to and in is it this that with for on zzqxv275
+__label__pos i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful i you we they he she my your our their 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg hate dislike sad angry upset annoyed frustrated miserable плохо ужасно отвратительно грустно злой really very quite so just too much little i you we they he she my your our their
+__label__other movie film product service app story book game movie film product service app story book game mauvais terrible horrible triste en colère bueno excelente genial feliz maravilloso
+__label__pos really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美 جيد رائع ممتاز جميل سعيد really very quite so just too much little
+__label__neg today yesterday evening morning week month year i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing плохо ужасно отвратительно грустно злой
+__label__other really very quite so just too much little today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美 best awesome brilliant perfect outstanding marvelous terrific
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on movie film product service app story book game
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their the a of to and in is it this that with for on
+__label__other today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing movie film product service app story book game love like enjoy happy pleased glad thrilled satisfied impressed
+__label__pos good great excellent amazing wonderful fantastic superb delightful good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little the a of to and in is it this that with for on __label__pos
+__label__neg hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their really very quite so just too much little mauvais terrible horrible triste en colère zzqxv286 naïve-café_42
+__label__other movie film product service app story book game worst broken useless boring trash garbage really very quite so just too much little bad terrible awful horrible dreadful poor disappointing
+__label__pos today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game bon bon excellent génial heureux
+__label__neg bad terrible awful horrible dreadful poor disappointing today yesterday evening morning week month year today yesterday evening morning week month year worst broken useless boring trash garbage 🙂🚀
+__label__other bad terrible awful horrible dreadful poor disappointing really very quite so just too much little i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed
+__label__pos good great excellent amazing wonderful fantastic superb delightful جيد رائع ممتاز جميل سعيد movie film product service app story book game today yesterday evening morning week month year
+__label__neg today yesterday evening morning week month year سيء فظيع حزين غاضب mauvais terrible horrible triste en colère today yesterday evening morning week month year
+__label__other i you we they he she my your our their movie film product service app story book game mauvais terrible horrible triste en colère 差 很糟 讨厌 伤心 生气 垃圾
+__label__pos the a of to and in is it this that with for on movie film product service app story book game bon bon excellent génial heureux рекомендую отлично прекрасно замечательно здорово класс
+__label__neg mauvais terrible horrible triste en colère i you we they he she my your our their the a of to and in is it this that with for on worst broken useless boring trash garbage
+__label__other today yesterday evening morning week month year worst broken useless boring trash garbage malo terrible horrible triste enojado movie film product service app story book game
+__label__pos best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on movie film product service app story book game جيد رائع ممتاز جميل سعيد zzqxv297
+__label__neg movie film product service app story book game worst broken useless boring trash garbage mauvais terrible horrible triste en colère today yesterday evening morning week month year
+__label__other really very quite so just too much little 好 很好 优秀 喜欢 开心 满意 完美 good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year naïve-café_42
+__label__pos the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美 bon bon excellent génial heureux today yesterday evening morning week month year
+__label__neg movie film product service app story book game worst broken useless boring trash garbage bad terrible awful horrible dreadful poor disappointing really very quite so just too much little
+__label__other bueno excelente genial feliz maravilloso i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing today yesterday evening morning week month year
+__label__pos today yesterday evening morning week month year i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed bueno excelente genial feliz maravilloso
+__label__neg bad terrible awful horrible dreadful poor disappointing worst broken useless boring trash garbage really very quite so just too much little i you we they he she my your our their __label__pos
+__label__other malo terrible horrible triste enojado really very quite so just too much little today yesterday evening morning week month year good great excellent amazing wonderful fantastic superb delightful
+__label__pos today yesterday evening morning week month year movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful bueno excelente genial feliz maravilloso 🙂🚀
+__label__neg movie film product service app story book game worst broken useless boring trash garbage really very quite so just too much little плохо ужасно отвратительно грустно злой
+__label__other bad terrible awful horrible dreadful poor disappointing movie film product service app story book game movie film product service app story book game جيد رائع ممتاز جميل سعيد zzqxv308
+__label__pos good great excellent amazing wonderful fantastic superb delightful рекомендую отлично прекрасно замечательно здорово класс the a of to and in is it this that with for on really very quite so just too much little
+__label__neg today yesterday evening morning week month year سيء فظيع حزين غاضب i you we they he she my your our their سيء فظيع حزين غاضب
+__label__other mauvais terrible horrible triste en colère movie film product service app story book game today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美
+__label__pos really very quite so just too much little today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific good great excellent amazing wonderful fantastic superb delightful naïve-café_42
+__label__neg hate dislike sad angry upset annoyed frustrated miserable hate dislike sad angry upset annoyed frustrated miserable movie film product service app story book game today yesterday evening morning week month year
+__label__other hate dislike sad angry upset annoyed frustrated miserable love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on i you we they he she my your our their
+__label__pos the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful
+__label__neg hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year today yesterday evening morning week month year worst broken useless boring trash garbage
+__label__other bad terrible awful horrible dreadful poor disappointing bueno excelente genial feliz maravilloso the a of to and in is it this that with for on really very quite so just too much little
+__label__pos today yesterday evening morning week month year the a of to and in is it this that with for on bon bon excellent génial heureux love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg mauvais terrible horrible triste en colère really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their zzqxv319
+__label__other really very quite so just too much little movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс 差 很糟 讨厌 伤心 生气 垃圾
+__label__pos bon bon excellent génial heureux bueno excelente genial feliz maravilloso movie film product service app story book game the a of to and in is it this that with for on
+__label__neg today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing malo terrible horrible triste enojado the a of to and in is it this that with for on
+__label__other سيء فظيع حزين غاضب worst broken useless boring trash garbage really very quite so just too much little today yesterday evening morning week month year 🙂🚀 __label__pos
+__label__pos best awesome brilliant perfect outstanding marvelous terrific جيد رائع ممتاز جميل سعيد today yesterday evening morning week month year movie film product service app story book game
+__label__neg movie film product service app story book game really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable سيء فظيع حزين غاضب naïve-café_42
+__label__other bueno excelente genial feliz maravilloso movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful movie film product service app story book game
+__label__pos good great excellent amazing wonderful fantastic superb delightful good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little the a of to and in is it this that with for on
+__label__neg today yesterday evening morning week month year the a of to and in is it this that with for on hate dislike sad angry upset annoyed frustrated miserable bad terrible awful horrible dreadful poor disappointing
+__label__other hate dislike sad angry upset annoyed frustrated miserable love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__pos really very quite so just too much little good great excellent amazing wonderful fantastic superb delightful love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little zzqxv330
+__label__neg worst broken useless boring trash garbage the a of to and in is it this that with for on really very quite so just too much little mauvais terrible horrible triste en colère
+__label__other the a of to and in is it this that with for on hate dislike sad angry upset annoyed frustrated miserable bad terrible awful horrible dreadful poor disappointing movie film product service app story book game
+__label__pos bueno excelente genial feliz maravilloso рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little today yesterday evening morning week month year
+__label__neg today yesterday evening morning week month year mauvais terrible horrible triste en colère the a of to and in is it this that with for on mauvais terrible horrible triste en colère
+__label__other really very quite so just too much little i you we they he she my your our their 差 很糟 讨厌 伤心 生气 垃圾 bueno excelente genial feliz maravilloso
+__label__pos рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little جيد رائع ممتاز جميل سعيد today yesterday evening morning week month year
+__label__neg the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on 差 很糟 讨厌 伤心 生气 垃圾
+__label__other плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on malo terrible horrible triste enojado really very quite so just too much little naïve-café_42
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their movie film product service app story book game
+__label__neg плохо ужасно отвратительно грустно злой worst broken useless boring trash garbage really very quite so just too much little really very quite so just too much little 🙂🚀
+__label__other movie film product service app story book game bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their mauvais terrible horrible triste en colère zzqxv341
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their really very quite so just too much little bon bon excellent génial heureux __label__pos
+__label__neg hate dislike sad angry upset annoyed frustrated miserable malo terrible horrible triste enojado i you we they he she my your our their i you we they he she my your our their
+__label__other hate dislike sad angry upset annoyed frustrated miserable плохо ужасно отвратительно грустно злой i you we they he she my your our their really very quite so just too much little
+__label__pos i you we they he she my your our their bon bon excellent génial heureux good great excellent amazing wonderful fantastic superb delightful i you we they he she my your our their
+__label__neg really very quite so just too much little i you we they he she my your our their worst broken useless boring trash garbage malo terrible horrible triste enojado
+__label__other bon bon excellent génial heureux today yesterday evening morning week month year worst broken useless boring trash garbage movie film product service app story book game
+__label__pos good great excellent amazing wonderful fantastic superb delightful 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their really very quite so just too much little
+__label__neg i you we they he she my your our their malo terrible horrible triste enojado malo terrible horrible triste enojado i you we they he she my your our their
+__label__other the a of to and in is it this that with for on really very quite so just too much little malo terrible horrible triste enojado good great excellent amazing wonderful fantastic superb delightful
+__label__pos really very quite so just too much little really very quite so just too much little جيد رائع ممتاز جميل سعيد bueno excelente genial feliz maravilloso naïve-café_42
+__label__neg malo terrible horrible triste enojado mauvais terrible horrible triste en colère really very quite so just too much little i you we they he she my your our their zzqxv352
+__label__other today yesterday evening morning week month year today yesterday evening morning week month year плохо ужасно отвратительно грустно злой جيد رائع ممتاز جميل سعيد
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year really very quite so just too much little
+__label__neg плохо ужасно отвратительно грустно злой really very quite so just too much little 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game
+__label__other плохо ужасно отвратительно грустно злой really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс the a of to and in is it this that with for on
+__label__pos good great excellent amazing wonderful fantastic superb delightful i you we they he she my your our their today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美 🙂🚀
+__label__neg плохо ужасно отвратительно грустно злой bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their movie film product service app story book game
+__label__other the a of to and in is it this that with for on really very quite so just too much little bueno excelente genial feliz maravilloso سيء فظيع حزين غاضب
+__label__pos good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed movie film product service app story book game
+__label__neg today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing really very quite so just too much little bad terrible awful horrible dreadful poor disappointing __label__pos
+__label__other bad terrible awful horrible dreadful poor disappointing плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on movie film product service app story book game
+__label__pos جيد رائع ممتاز جميل سعيد movie film product service app story book game love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their zzqxv363
+__label__neg malo terrible horrible triste enojado really very quite so just too much little плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on naïve-café_42
+__label__other the a of to and in is it this that with for on bon bon excellent génial heureux movie film product service app story book game bon bon excellent génial heureux
+__label__pos really very quite so just too much little bon bon excellent génial heureux 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their
+__label__neg плохо ужасно отвратительно грустно злой really very quite so just too much little malo terrible horrible triste enojado movie film product service app story book game
+__label__other movie film product service app story book game the a of to and in is it this that with for on mauvais terrible horrible triste en colère good great excellent amazing wonderful fantastic superb delightful
+__label__pos bueno excelente genial feliz maravilloso best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on today yesterday evening morning week month year
+__label__neg i you we they he she my your our their hate dislike sad angry upset annoyed frustrated miserable سيء فظيع حزين غاضب really very quite so just too much little
+__label__other today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little سيء فظيع حزين غاضب
+__label__pos today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美 bon bon excellent génial heureux movie film product service app story book game
+__label__neg movie film product service app story book game movie film product service app story book game bad terrible awful horrible dreadful poor disappointing سيء فظيع حزين غاضب
+__label__other 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their zzqxv374 🙂🚀
+__label__pos جيد رائع ممتاز جميل سعيد جيد رائع ممتاز جميل سعيد movie film product service app story book game i you we they he she my your our their
+__label__neg really very quite so just too much little 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game mauvais terrible horrible triste en colère
+__label__other really very quite so just too much little bad terrible awful horrible dreadful poor disappointing today yesterday evening morning week month year malo terrible horrible triste enojado naïve-café_42
+__label__pos best awesome brilliant perfect outstanding marvelous terrific love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on really very quite so just too much little
+__label__neg worst broken useless boring trash garbage bad terrible awful horrible dreadful poor disappointing today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__other today yesterday evening morning week month year bon bon excellent génial heureux movie film product service app story book game جيد رائع ممتاز جميل سعيد __label__pos
+__label__pos the a of to and in is it this that with for on рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg today yesterday evening morning week month year worst broken useless boring trash garbage malo terrible horrible triste enojado today yesterday evening morning week month year
+__label__other today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on
+__label__pos i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year bon bon excellent génial heureux
+__label__neg really very quite so just too much little movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 hate dislike sad angry upset annoyed frustrated miserable zzqxv385
+__label__other movie film product service app story book game جيد رائع ممتاز جميل سعيد today yesterday evening morning week month year سيء فظيع حزين غاضب
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 best awesome brilliant perfect outstanding marvelous terrific really very quite so just too much little movie film product service app story book game
+__label__neg سيء فظيع حزين غاضب the a of to and in is it this that with for on malo terrible horrible triste enojado the a of to and in is it this that with for on
+__label__other the a of to and in is it this that with for on bon bon excellent génial heureux today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс
+__label__pos bueno excelente genial feliz maravilloso bueno excelente genial feliz maravilloso movie film product service app story book game really very quite so just too much little naïve-café_42
+__label__neg malo terrible horrible triste enojado سيء فظيع حزين غاضب i you we they he she my your our their today yesterday evening morning week month year 🙂🚀
+__label__other سيء فظيع حزين غاضب really very quite so just too much little bueno excelente genial feliz maravilloso movie film product service app story book game
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 movie film product service app story book game really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific
+__label__neg today yesterday evening morning week month year плохо ужасно отвратительно грустно злой bad terrible awful horrible dreadful poor disappointing movie film product service app story book game
+__label__other bueno excelente genial feliz maravilloso hate dislike sad angry upset annoyed frustrated miserable movie film product service app story book game movie film product service app story book game
+__label__pos the a of to and in is it this that with for on рекомендую отлично прекрасно замечательно здорово класс рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little zzqxv396
+__label__neg movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 really very quite so just too much little worst broken useless boring trash garbage
+__label__other movie film product service app story book game سيء فظيع حزين غاضب جيد رائع ممتاز جميل سعيد really very quite so just too much little
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year __label__pos
+__label__neg movie film product service app story book game 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing
+__label__other malo terrible horrible triste enojado movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year
+__label__pos really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific the a of to and in is it this that with for on 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable mauvais terrible horrible triste en colère today yesterday evening morning week month year naïve-café_42
+__label__other really very quite so just too much little mauvais terrible horrible triste en colère سيء فظيع حزين غاضب movie film product service app story book game
+__label__pos today yesterday evening morning week month year really very quite so just too much little love like enjoy happy pleased glad thrilled satisfied impressed 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg movie film product service app story book game bad terrible awful horrible dreadful poor disappointing bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their
+__label__other really very quite so just too much little جيد رائع ممتاز جميل سعيد рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year zzqxv407
+__label__pos جيد رائع ممتاز جميل سعيد today yesterday evening morning week month year movie film product service app story book game جيد رائع ممتاز جميل سعيد 🙂🚀
+__label__neg the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой the a of to and in is it this that with for on 差 很糟 讨厌 伤心 生气 垃圾
+__label__other bueno excelente genial feliz maravilloso love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their i you we they he she my your our their
+__label__pos movie film product service app story book game movie film product service app story book game 好 很好 优秀 喜欢 开心 满意 完美 love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg hate dislike sad angry upset annoyed frustrated miserable the a of to and in is it this that with for on malo terrible horrible triste enojado i you we they he she my your our their
+__label__other the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful плохо ужасно отвратительно грустно злой really very quite so just too much little
+__label__pos i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little
+__label__neg i you we they he she my your our their worst broken useless boring trash garbage bad terrible awful horrible dreadful poor disappointing movie film product service app story book game
+__label__other плохо ужасно отвратительно грустно злой bueno excelente genial feliz maravilloso the a of to and in is it this that with for on i you we they he she my your our their naïve-café_42
+__label__pos i you we they he she my your our their best awesome brilliant perfect outstanding marvelous terrific really very quite so just too much little bueno excelente genial feliz maravilloso
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year i you we they he she my your our their malo terrible horrible triste enojado zzqxv418 __label__pos
+__label__other movie film product service app story book game bueno excelente genial feliz maravilloso i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful
+__label__pos bueno excelente genial feliz maravilloso really very quite so just too much little جيد رائع ممتاز جميل سعيد movie film product service app story book game
+__label__neg movie film product service app story book game плохо ужасно отвратительно грустно злой movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable
+__label__other really very quite so just too much little bueno excelente genial feliz maravilloso рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year
+__label__pos really very quite so just too much little really very quite so just too much little love like enjoy happy pleased glad thrilled satisfied impressed рекомендую отлично прекрасно замечательно здорово класс
+__label__neg worst broken useless boring trash garbage really very quite so just too much little really very quite so just too much little mauvais terrible horrible triste en colère
+__label__other malo terrible horrible triste enojado movie film product service app story book game really very quite so just too much little 差 很糟 讨厌 伤心 生气 垃圾 🙂🚀
+__label__pos today yesterday evening morning week month year really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on the a of to and in is it this that with for on سيء فظيع حزين غاضب
+__label__other the a of to and in is it this that with for on рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their 好 很好 优秀 喜欢 开心 满意 完美
+__label__pos today yesterday evening morning week month year today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific جيد رائع ممتاز جميل سعيد zzqxv429 naïve-café_42
+__label__neg плохо ужасно отвратительно грустно злой سيء فظيع حزين غاضب really very quite so just too much little really very quite so just too much little
+__label__other плохо ужасно отвратительно грустно злой love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__pos good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс
+__label__neg mauvais terrible horrible triste en colère the a of to and in is it this that with for on bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on
+__label__other bad terrible awful horrible dreadful poor disappointing جيد رائع ممتاز جميل سعيد really very quite so just too much little movie film product service app story book game
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific today yesterday evening morning week month year
+__label__neg worst broken useless boring trash garbage i you we they he she my your our their سيء فظيع حزين غاضب really very quite so just too much little
+__label__other really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific جيد رائع ممتاز جميل سعيد really very quite so just too much little __label__pos
+__label__pos really very quite so just too much little movie film product service app story book game bueno excelente genial feliz maravilloso bon bon excellent génial heureux
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game really very quite so just too much little плохо ужасно отвратительно грустно злой
+__label__other плохо ужасно отвратительно грустно злой today yesterday evening morning week month year malo terrible horrible triste enojado really very quite so just too much little zzqxv440
+__label__pos today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little
+__label__neg плохо ужасно отвратительно грустно злой really very quite so just too much little i you we they he she my your our their bad terrible awful horrible dreadful poor disappointing naïve-café_42 🙂🚀
+__label__other today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their 好 很好 优秀 喜欢 开心 满意 完美
+__label__pos the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific really very quite so just too much little جيد رائع ممتاز جميل سعيد
+__label__neg movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year سيء فظيع حزين غاضب
+__label__other hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year really very quite so just too much little worst broken useless boring trash garbage
+__label__pos جيد رائع ممتاز جميل سعيد good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year today yesterday evening morning week month year
+__label__neg movie film product service app story book game today yesterday evening morning week month year плохо ужасно отвратительно грустно злой плохо ужасно отвратительно грустно злой
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their malo terrible horrible triste enojado i you we they he she my your our their
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific today yesterday evening morning week month year
+__label__neg hate dislike sad angry upset annoyed frustrated miserable really very quite so just too much little worst broken useless boring trash garbage today yesterday evening morning week month year zzqxv451
+__label__other سيء فظيع حزين غاضب i you we they he she my your our their today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific
+__label__pos best awesome brilliant perfect outstanding marvelous terrific today yesterday evening morning week month year movie film product service app story book game good great excellent amazing wonderful fantastic superb delightful
+__label__neg mauvais terrible horrible triste en colère malo terrible horrible triste enojado really very quite so just too much little movie film product service app story book game
+__label__other bon bon excellent génial heureux the a of to and in is it this that with for on movie film product service app story book game bueno excelente genial feliz maravilloso naïve-café_42
+__label__pos best awesome brilliant perfect outstanding marvelous terrific جيد رائع ممتاز جميل سعيد movie film product service app story book game the a of to and in is it this that with for on __label__pos
+__label__neg bad terrible awful horrible dreadful poor disappointing سيء فظيع حزين غاضب today yesterday evening morning week month year movie film product service app story book game
+__label__other really very quite so just too much little today yesterday evening morning week month year mauvais terrible horrible triste en colère 差 很糟 讨厌 伤心 生气 垃圾
+__label__pos good great excellent amazing wonderful fantastic superb delightful love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little today yesterday evening morning week month year 🙂🚀
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 mauvais terrible horrible triste en colère the a of to and in is it this that with for on the a of to and in is it this that with for on
+__label__other today yesterday evening morning week month year really very quite so just too much little love like enjoy happy pleased glad thrilled satisfied impressed سيء فظيع حزين غاضب
+__label__pos really very quite so just too much little movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс best awesome brilliant perfect outstanding marvelous terrific zzqxv462
+__label__neg malo terrible horrible triste enojado really very quite so just too much little really very quite so just too much little سيء فظيع حزين غاضب
+__label__other bon bon excellent génial heureux bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on i you we they he she my your our their
+__label__pos really very quite so just too much little جيد رائع ممتاز جميل سعيد 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little
+__label__neg today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing the a of to and in is it this that with for on mauvais terrible horrible triste en colère
+__label__other really very quite so just too much little the a of to and in is it this that with for on 差 很糟 讨厌 伤心 生气 垃圾 best awesome brilliant perfect outstanding marvelous terrific
+__label__pos best awesome brilliant perfect outstanding marvelous terrific рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little today yesterday evening morning week month year naïve-café_42
+__label__neg worst broken useless boring trash garbage worst broken useless boring trash garbage the a of to and in is it this that with for on really very quite so just too much little
+__label__other movie film product service app story book game malo terrible horrible triste enojado mauvais terrible horrible triste en colère today yesterday evening morning week month year
+__label__pos the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on جيد رائع ممتاز جميل سعيد
+__label__neg سيء فظيع حزين غاضب movie film product service app story book game bad terrible awful horrible dreadful poor disappointing really very quite so just too much little
+__label__other bon bon excellent génial heureux good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on today yesterday evening morning week month year zzqxv473
+__label__pos рекомендую отлично прекрасно замечательно здорово класс movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game really very quite so just too much little mauvais terrible horrible triste en colère __label__pos
+__label__other the a of to and in is it this that with for on hate dislike sad angry upset annoyed frustrated miserable 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year 🙂🚀
+__label__pos best awesome brilliant perfect outstanding marvelous terrific today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс really very quite so just too much little
+__label__neg the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой i you we they he she my your our their سيء فظيع حزين غاضب
+__label__other the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable
+__label__pos best awesome brilliant perfect outstanding marvelous terrific جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on movie film product service app story book game
+__label__neg malo terrible horrible triste enojado i you we they he she my your our their hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year naïve-café_42
+__label__other bueno excelente genial feliz maravilloso movie film product service app story book game the a of to and in is it this that with for on good great excellent amazing wonderful fantastic superb delightful
+__label__pos good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on today yesterday evening morning week month year love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg worst broken useless boring trash garbage really very quite so just too much little i you we they he she my your our their mauvais terrible horrible triste en colère zzqxv484
+__label__other really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year
+__label__pos the a of to and in is it this that with for on today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс рекомендую отлично прекрасно замечательно здорово класс
+__label__neg movie film product service app story book game the a of to and in is it this that with for on hate dislike sad angry upset annoyed frustrated miserable 差 很糟 讨厌 伤心 生气 垃圾
+__label__other bad terrible awful horrible dreadful poor disappointing good great excellent amazing wonderful fantastic superb delightful today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__pos جيد رائع ممتاز جميل سعيد today yesterday evening morning week month year bueno excelente genial feliz maravilloso i you we they he she my your our their
+__label__neg worst broken useless boring trash garbage i you we they he she my your our their malo terrible horrible triste enojado i you we they he she my your our their
+__label__other i you we they he she my your our their really very quite so just too much little bon bon excellent génial heureux bad terrible awful horrible dreadful poor disappointing
+__label__pos love like enjoy happy pleased glad thrilled satisfied impressed good great excellent amazing wonderful fantastic superb delightful i you we they he she my your our their the a of to and in is it this that with for on
+__label__neg سيء فظيع حزين غاضب mauvais terrible horrible triste en colère really very quite so just too much little the a of to and in is it this that with for on 🙂🚀
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 worst broken useless boring trash garbage i you we they he she my your our their movie film product service app story book game naïve-café_42 __label__pos
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year really very quite so just too much little bueno excelente genial feliz maravilloso zzqxv495
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their today yesterday evening morning week month year
+__label__other today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美 really very quite so just too much little best awesome brilliant perfect outstanding marvelous terrific
+__label__pos рекомендую отлично прекрасно замечательно здорово класс movie film product service app story book game جيد رائع ممتاز جميل سعيد movie film product service app story book game
+__label__neg today yesterday evening morning week month year i you we they he she my your our their malo terrible horrible triste enojado سيء فظيع حزين غاضب
+__label__other bad terrible awful horrible dreadful poor disappointing 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year the a of to and in is it this that with for on
+__label__pos i you we they he she my your our their bon bon excellent génial heureux love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year
+__label__neg really very quite so just too much little movie film product service app story book game mauvais terrible horrible triste en colère mauvais terrible horrible triste en colère
+__label__other плохо ужасно отвратительно грустно злой mauvais terrible horrible triste en colère movie film product service app story book game really very quite so just too much little
+__label__pos the a of to and in is it this that with for on really very quite so just too much little bueno excelente genial feliz maravilloso 好 很好 优秀 喜欢 开心 满意 完美
+__label__neg bad terrible awful horrible dreadful poor disappointing really very quite so just too much little worst broken useless boring trash garbage today yesterday evening morning week month year
+__label__other bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their bon bon excellent génial heureux the a of to and in is it this that with for on zzqxv506
+__label__pos really very quite so just too much little bueno excelente genial feliz maravilloso best awesome brilliant perfect outstanding marvelous terrific today yesterday evening morning week month year naïve-café_42
+__label__neg malo terrible horrible triste enojado the a of to and in is it this that with for on سيء فظيع حزين غاضب today yesterday evening morning week month year
+__label__other really very quite so just too much little плохо ужасно отвратительно грустно злой i you we they he she my your our their bon bon excellent génial heureux
+__label__pos movie film product service app story book game love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد 🙂🚀
+__label__neg malo terrible horrible triste enojado malo terrible horrible triste enojado really very quite so just too much little i you we they he she my your our their
+__label__other i you we they he she my your our their рекомендую отлично прекрасно замечательно здорово класс malo terrible horrible triste enojado i you we they he she my your our their
+__label__pos i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed i you we they he she my your our their bon bon excellent génial heureux __label__pos
+__label__neg really very quite so just too much little плохо ужасно отвратительно грустно злой i you we they he she my your our their плохо ужасно отвратительно грустно злой
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their the a of to and in is it this that with for on worst broken useless boring trash garbage
+__label__pos good great excellent amazing wonderful fantastic superb delightful the a of to and in is it this that with for on i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg i you we they he she my your our their плохо ужасно отвратительно грустно злой today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing zzqxv517
+__label__other movie film product service app story book game 好 很好 优秀 喜欢 开心 满意 完美 سيء فظيع حزين غاضب the a of to and in is it this that with for on
+__label__pos today yesterday evening morning week month year best awesome brilliant perfect outstanding marvelous terrific good great excellent amazing wonderful fantastic superb delightful really very quite so just too much little
+__label__neg malo terrible horrible triste enojado 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year really very quite so just too much little naïve-café_42
+__label__other love like enjoy happy pleased glad thrilled satisfied impressed today yesterday evening morning week month year hate dislike sad angry upset annoyed frustrated miserable movie film product service app story book game
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 the a of to and in is it this that with for on movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс
+__label__neg movie film product service app story book game mauvais terrible horrible triste en colère mauvais terrible horrible triste en colère really very quite so just too much little
+__label__other the a of to and in is it this that with for on today yesterday evening morning week month year love like enjoy happy pleased glad thrilled satisfied impressed malo terrible horrible triste enojado
+__label__pos 好 很好 优秀 喜欢 开心 满意 完美 i you we they he she my your our their good great excellent amazing wonderful fantastic superb delightful movie film product service app story book game
+__label__neg movie film product service app story book game i you we they he she my your our their mauvais terrible horrible triste en colère malo terrible horrible triste enojado
+__label__other movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс the a of to and in is it this that with for on سيء فظيع حزين غاضب 🙂🚀
+__label__pos really very quite so just too much little good great excellent amazing wonderful fantastic superb delightful best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game zzqxv528
+__label__neg movie film product service app story book game movie film product service app story book game worst broken useless boring trash garbage плохо ужасно отвратительно грустно злой
+__label__other bueno excelente genial feliz maravilloso i you we they he she my your our their the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific
+__label__pos the a of to and in is it this that with for on movie film product service app story book game bon bon excellent génial heureux bueno excelente genial feliz maravilloso
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 mauvais terrible horrible triste en colère really very quite so just too much little movie film product service app story book game __label__pos
+__label__other really very quite so just too much little today yesterday evening morning week month year hate dislike sad angry upset annoyed frustrated miserable bad terrible awful horrible dreadful poor disappointing naïve-café_42
+__label__pos bueno excelente genial feliz maravilloso i you we they he she my your our their today yesterday evening morning week month year good great excellent amazing wonderful fantastic superb delightful
+__label__neg i you we they he she my your our their плохо ужасно отвратительно грустно злой movie film product service app story book game hate dislike sad angry upset annoyed frustrated miserable
+__label__other i you we they he she my your our their the a of to and in is it this that with for on worst broken useless boring trash garbage سيء فظيع حزين غاضب
+__label__pos i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed рекомендую отлично прекрасно замечательно здорово класс today yesterday evening morning week month year
+__label__neg плохо ужасно отвратительно грустно злой hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year i you we they he she my your our their
+__label__other bueno excelente genial feliz maravilloso today yesterday evening morning week month year i you we they he she my your our their 好 很好 优秀 喜欢 开心 满意 完美 zzqxv539
+__label__pos the a of to and in is it this that with for on today yesterday evening morning week month year good great excellent amazing wonderful fantastic superb delightful love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing worst broken useless boring trash garbage today yesterday evening morning week month year
+__label__other the a of to and in is it this that with for on плохо ужасно отвратительно грустно злой worst broken useless boring trash garbage movie film product service app story book game
+__label__pos movie film product service app story book game love like enjoy happy pleased glad thrilled satisfied impressed love like enjoy happy pleased glad thrilled satisfied impressed really very quite so just too much little
+__label__neg really very quite so just too much little really very quite so just too much little bad terrible awful horrible dreadful poor disappointing bad terrible awful horrible dreadful poor disappointing 🙂🚀
+__label__other the a of to and in is it this that with for on سيء فظيع حزين غاضب today yesterday evening morning week month year плохо ужасно отвратительно грустно злой
+__label__pos i you we they he she my your our their جيد رائع ممتاز جميل سعيد love like enjoy happy pleased glad thrilled satisfied impressed the a of to and in is it this that with for on naïve-café_42
+__label__neg hate dislike sad angry upset annoyed frustrated miserable movie film product service app story book game the a of to and in is it this that with for on hate dislike sad angry upset annoyed frustrated miserable
+__label__other movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their worst broken useless boring trash garbage
+__label__pos جيد رائع ممتاز جميل سعيد 好 很好 优秀 喜欢 开心 满意 完美 movie film product service app story book game today yesterday evening morning week month year
+__label__neg really very quite so just too much little really very quite so just too much little worst broken useless boring trash garbage плохо ужасно отвратительно грустно злой zzqxv550
+__label__other really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed __label__pos
+__label__pos today yesterday evening morning week month year movie film product service app story book game best awesome brilliant perfect outstanding marvelous terrific love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 the a of to and in is it this that with for on really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable
+__label__other bon bon excellent génial heureux really very quite so just too much little really very quite so just too much little bon bon excellent génial heureux
+__label__pos جيد رائع ممتاز جميل سعيد the a of to and in is it this that with for on movie film product service app story book game love like enjoy happy pleased glad thrilled satisfied impressed
+__label__neg movie film product service app story book game really very quite so just too much little mauvais terrible horrible triste en colère hate dislike sad angry upset annoyed frustrated miserable
+__label__other movie film product service app story book game سيء فظيع حزين غاضب the a of to and in is it this that with for on love like enjoy happy pleased glad thrilled satisfied impressed
+__label__pos movie film product service app story book game movie film product service app story book game best awesome brilliant perfect outstanding marvelous terrific جيد رائع ممتاز جميل سعيد
+__label__neg hate dislike sad angry upset annoyed frustrated miserable bad terrible awful horrible dreadful poor disappointing i you we they he she my your our their the a of to and in is it this that with for on naïve-café_42
+__label__other the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game
+__label__pos جيد رائع ممتاز جميل سعيد i you we they he she my your our their i you we they he she my your our their best awesome brilliant perfect outstanding marvelous terrific zzqxv561 🙂🚀
+__label__neg bad terrible awful horrible dreadful poor disappointing really very quite so just too much little mauvais terrible horrible triste en colère movie film product service app story book game
+__label__other today yesterday evening morning week month year movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс best awesome brilliant perfect outstanding marvelous terrific
+__label__pos рекомендую отлично прекрасно замечательно здорово класс bon bon excellent génial heureux really very quite so just too much little the a of to and in is it this that with for on
+__label__neg سيء فظيع حزين غاضب the a of to and in is it this that with for on i you we they he she my your our their malo terrible horrible triste enojado
+__label__other hate dislike sad angry upset annoyed frustrated miserable سيء فظيع حزين غاضب the a of to and in is it this that with for on today yesterday evening morning week month year
+__label__pos i you we they he she my your our their love like enjoy happy pleased glad thrilled satisfied impressed bon bon excellent génial heureux i you we they he she my your our their
+__label__neg the a of to and in is it this that with for on سيء فظيع حزين غاضب плохо ужасно отвратительно грустно злой today yesterday evening morning week month year
+__label__other hate dislike sad angry upset annoyed frustrated miserable today yesterday evening morning week month year the a of to and in is it this that with for on worst broken useless boring trash garbage
+__label__pos the a of to and in is it this that with for on movie film product service app story book game рекомендую отлично прекрасно замечательно здорово класс bueno excelente genial feliz maravilloso __label__pos
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 movie film product service app story book game malo terrible horrible triste enojado today yesterday evening morning week month year
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 плохо ужасно отвратительно грустно злой i you we they he she my your our their today yesterday evening morning week month year zzqxv572 naïve-café_42
+__label__pos bueno excelente genial feliz maravilloso really very quite so just too much little the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific
+__label__neg mauvais terrible horrible triste en colère плохо ужасно отвратительно грустно злой today yesterday evening morning week month year really very quite so just too much little
+__label__other i you we they he she my your our their 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾
+__label__pos bon bon excellent génial heureux 好 很好 优秀 喜欢 开心 满意 完美 today yesterday evening morning week month year today yesterday evening morning week month year
+__label__neg mauvais terrible horrible triste en colère i you we they he she my your our their today yesterday evening morning week month year bad terrible awful horrible dreadful poor disappointing
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 really very quite so just too much little today yesterday evening morning week month year malo terrible horrible triste enojado 🙂🚀
+__label__pos i you we they he she my your our their movie film product service app story book game جيد رائع ممتاز جميل سعيد good great excellent amazing wonderful fantastic superb delightful
+__label__neg bad terrible awful horrible dreadful poor disappointing плохо ужасно отвратительно грустно злой movie film product service app story book game i you we they he she my your our their
+__label__other good great excellent amazing wonderful fantastic superb delightful hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their really very quite so just too much little
+__label__pos today yesterday evening morning week month year bon bon excellent génial heureux bueno excelente genial feliz maravilloso today yesterday evening morning week month year
+__label__neg movie film product service app story book game سيء فظيع حزين غاضب movie film product service app story book game bad terrible awful horrible dreadful poor disappointing zzqxv583
+__label__other جيد رائع ممتاز جميل سعيد really very quite so just too much little hate dislike sad angry upset annoyed frustrated miserable the a of to and in is it this that with for on
+__label__pos best awesome brilliant perfect outstanding marvelous terrific i you we they he she my your our their today yesterday evening morning week month year 好 很好 优秀 喜欢 开心 满意 完美 naïve-café_42
+__label__neg mauvais terrible horrible triste en colère today yesterday evening morning week month year malo terrible horrible triste enojado the a of to and in is it this that with for on
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 the a of to and in is it this that with for on today yesterday evening morning week month year mauvais terrible horrible triste en colère
+__label__pos bueno excelente genial feliz maravilloso today yesterday evening morning week month year the a of to and in is it this that with for on best awesome brilliant perfect outstanding marvelous terrific
+__label__neg malo terrible horrible triste enojado hate dislike sad angry upset annoyed frustrated miserable i you we they he she my your our their today yesterday evening morning week month year __label__pos
+__label__other today yesterday evening morning week month year рекомендую отлично прекрасно замечательно здорово класс i you we they he she my your our their hate dislike sad angry upset annoyed frustrated miserable
+__label__pos جيد رائع ممتاز جميل سعيد movie film product service app story book game today yesterday evening morning week month year جيد رائع ممتاز جميل سعيد
+__label__neg movie film product service app story book game malo terrible horrible triste enojado today yesterday evening morning week month year hate dislike sad angry upset annoyed frustrated miserable
+__label__other 差 很糟 讨厌 伤心 生气 垃圾 today yesterday evening morning week month year 差 很糟 讨厌 伤心 生气 垃圾 i you we they he she my your our their
+__label__pos جيد رائع ممتاز جميل سعيد best awesome brilliant perfect outstanding marvelous terrific movie film product service app story book game really very quite so just too much little zzqxv594
+__label__neg плохо ужасно отвратительно грустно злой today yesterday evening morning week month year worst broken useless boring trash garbage the a of to and in is it this that with for on 🙂🚀
+__label__other سيء فظيع حزين غاضب bon bon excellent génial heureux movie film product service app story book game i you we they he she my your our their
+__label__pos movie film product service app story book game really very quite so just too much little рекомендую отлично прекрасно замечательно здорово класс best awesome brilliant perfect outstanding marvelous terrific
+__label__neg 差 很糟 讨厌 伤心 生气 垃圾 malo terrible horrible triste enojado i you we they he she my your our their movie film product service app story book game naïve-café_42
+__label__other movie film product service app story book game today yesterday evening morning week month year bueno excelente genial feliz maravilloso bad terrible awful horrible dreadful poor disappointing

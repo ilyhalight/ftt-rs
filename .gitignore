@@ -1,0 +1,7 @@
+/target
+/bench/*.bin
+/bench/*.txt
+*.ftz
+!tests/data/models/*.ftz
+__pycache__/
+*.pyc
