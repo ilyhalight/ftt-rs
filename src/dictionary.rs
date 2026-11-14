@@ -575,6 +575,8 @@ impl Dictionary {
     }
 }
 
+/// The exact set fastText's tokenizer treats as whitespace, including NUL.
+/// Changing it changes every prediction, so it has to stay as fastText has it.
 #[inline]
 fn is_delimiter(b: u8) -> bool {
     matches!(b, b' ' | b'\n' | b'\r' | b'\t' | 0x0b | 0x0c | 0)

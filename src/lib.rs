@@ -1,12 +1,11 @@
-//! # fasttext-turbo
+//! # ftt-rs
 //!
-//! Fast, memory-mapped inference for fastText supervised models, written in
-//! pure Rust. It reads the ordinary `.bin` and `.ftz` files produced by
-//! fastText (and fastText-turbo), so existing models work unchanged.
+//! A fast, memory-mapped inference engine for fastText models insipred by fasttext-turbo,
+//! written from scratch in Rust.
 //!
 //! ```no_run
-//! # fn main() -> fasttext_turbo::Result<()> {
-//! use fasttext_turbo::{Model, PredictOptions};
+//! # fn main() -> ftt_rs::Result<()> {
+//! use ftt_rs::{Model, PredictOptions};
 //!
 //! let model = Model::load("model.bin")?;
 //! let predictions = model.predict("hello world", &PredictOptions::k(3))?;

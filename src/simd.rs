@@ -10,9 +10,10 @@ use crate::io::f32_at;
 /// Average the selected rows of a dense matrix into `out`.
 pub(crate) fn average_rows(rows: &[i32], dim: usize, data: &[u8], out: &mut [f32]) {
     assert_eq!(out.len(), dim);
-    debug_assert!(rows
-        .iter()
-        .all(|&r| r >= 0 && (r as usize) < data.len() / (dim * 4).max(1)));
+    debug_assert!(
+        rows.iter()
+            .all(|&r| r >= 0 && (r as usize) < data.len() / (dim * 4).max(1))
+    );
     if rows.is_empty() {
         out.fill(0.0);
         return;
@@ -175,7 +176,7 @@ mod x86 {
             // The rows are scattered over the embedding table, so hardware
             // prefetchers cannot follow them. Prefetch several rows ahead.
             if let Some(&next) = rows.get(ri + 32) {
-                let p = base_ptr.add(next as usize * dim * 4);
+                let p = unsafe { base_ptr.add(next as usize * dim * 4) };
                 _mm_prefetch::<_MM_HINT_T0>(p as *const i8);
             }
             let off = row as usize * dim * 4;
@@ -465,8 +466,8 @@ mod arm {
 pub(crate) fn exp_sum(scores: &[f32], max: f32) -> f32 {
     #[cfg(target_arch = "x86_64")]
     {
-        // The polynomial uses FMA, so AVX2 alone is not enough. Calling the
-        // function without FMA would be undefined behaviour.
+        // The polynomial is inlined into the FMA kernel, so the dispatch has
+        // to require FMA as well as AVX2.
         if is_x86_feature_detected!("avx2") && is_x86_feature_detected!("fma") {
             return unsafe { exp_sum_avx2(scores, max) };
         }
@@ -494,15 +495,15 @@ mod exp_x86 {
     /// exp(x) for x in roughly [-20, 0], relative error about 1e-7.
     #[inline]
     unsafe fn exp256(x: __m256) -> __m256 {
-        let log2e = _mm256_set1_ps(std::f32::consts::LOG2_E);
-        let ln2 = _mm256_set1_ps(std::f32::consts::LN_2);
+        let log2e = unsafe { _mm256_set1_ps(std::f32::consts::LOG2_E) };
+        let ln2 = unsafe { _mm256_set1_ps(std::f32::consts::LN_2) };
         // k = round(x / ln 2)
-        let k = _mm256_round_ps(_mm256_mul_ps(x, log2e), _MM_FROUND_TO_NEAREST_INT);
+        let k = unsafe { _mm256_round_ps(_mm256_mul_ps(x, log2e), _MM_FROUND_TO_NEAREST_INT) };
         // r = x - k * ln 2. The f32 LN_2 residual is below 2e-9 per unit of
         // k, so a split high/low constant is unnecessary here.
-        let r = _mm256_sub_ps(x, _mm256_mul_ps(k, ln2));
+        let r = unsafe { _mm256_sub_ps(x, _mm256_mul_ps(k, ln2)) };
         // exp(r) by Horner's method, degree 7 on |r| <= ln(2)/2.
-        let mut p = _mm256_set1_ps(1.0 / 5040.0);
+        let mut p = unsafe { _mm256_set1_ps(1.0 / 5040.0) };
         for c in [
             1.0 / 720.0,
             1.0 / 120.0,
@@ -512,15 +513,17 @@ mod exp_x86 {
             1.0,
             1.0,
         ] {
-            p = _mm256_fmadd_ps(p, r, _mm256_set1_ps(c));
+            p = unsafe { _mm256_fmadd_ps(p, r, _mm256_set1_ps(c)) };
         }
         // 2^k
-        let ki = _mm256_cvtps_epi32(k);
-        let pow2 = _mm256_castsi256_ps(_mm256_slli_epi32(
-            _mm256_add_epi32(ki, _mm256_set1_epi32(127)),
-            23,
-        ));
-        _mm256_mul_ps(p, pow2)
+        let ki = unsafe { _mm256_cvtps_epi32(k) };
+        let pow2 = unsafe {
+            _mm256_castsi256_ps(_mm256_slli_epi32(
+                _mm256_add_epi32(ki, _mm256_set1_epi32(127)),
+                23,
+            ))
+        };
+        unsafe { _mm256_mul_ps(p, pow2) }
     }
 
     #[target_feature(enable = "avx2,fma")]
@@ -532,15 +535,15 @@ mod exp_x86 {
         let mut acc = _mm256_setzero_ps();
         let mut i = 0usize;
         while i < nv {
-            let s = _mm256_loadu_ps(scores.as_ptr().add(i));
+            let s = unsafe { _mm256_loadu_ps(scores.as_ptr().add(i)) };
             let d = _mm256_sub_ps(s, vmax);
-            let e = exp256(d);
+            let e = unsafe { exp256(d) };
             let mask = _mm256_cmp_ps(d, cutoff, _CMP_GT_OQ);
             acc = _mm256_add_ps(acc, _mm256_and_ps(e, mask));
             i += 8;
         }
         let mut lanes = [0.0f32; 8];
-        _mm256_storeu_ps(lanes.as_mut_ptr(), acc);
+        unsafe { _mm256_storeu_ps(lanes.as_mut_ptr(), acc) };
         let mut sum: f32 = lanes.iter().sum();
         while i < n {
             let d = scores[i] - max;

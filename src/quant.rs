@@ -70,6 +70,8 @@ impl ProductQuantizer {
         let full = self.nsubq - 1;
         let mut res = 0.0f32;
         let mut m = 0usize;
+        // dsub == 2 is what fastText writes for most models; it gets an
+        // unrolled body instead of the inner loop.
         if self.dsub == 2 {
             while m < full {
                 let c = self.centroid_off(m, data[codes_off + m]);

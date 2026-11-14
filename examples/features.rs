@@ -1,4 +1,4 @@
-use fasttext_turbo::Model;
+use ftt_rs::Model;
 
 fn main() {
     let m = Model::load("tests/data/models/dense_softmax.bin").unwrap();

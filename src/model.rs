@@ -35,9 +35,9 @@ pub struct PredictOptions {
     /// (at least 128 lines per worker). A single-line prediction always runs
     /// on the calling thread.
     pub threads: usize,
-    /// Lines per batch. `0` chooses a size that keeps the score matrix in
-    /// cache (between 8 and 64 lines). Batches are independent, so this only
-    /// affects speed and the last bits of the probabilities.
+    /// Lines per batch. `0` sizes it from the label count (8 to 64 lines).
+    /// Batching affects speed only: each line is scored with the same
+    /// accumulation order, so the output is identical for any batch size.
     pub batch_size: usize,
     /// Append the end-of-sentence token. The Python API appends a newline to
     /// every string, so this is `true` by default for compatibility. Set it
@@ -180,7 +180,9 @@ impl WordCache {
         }
 
         // For a large vocabulary, cache the most frequent words first: they
-        // account for most tokens. The smallest models fit entirely.
+        // account for most tokens. The smallest models fit entirely. fastText
+        // writes words in descending count, so the sort is a no-op on
+        // well-formed files; it is here because that order is not guaranteed.
         let selected: Vec<u32> = if nwords <= max_slots {
             (0..nwords as u32).collect()
         } else {
@@ -691,6 +693,8 @@ impl Model {
             }
         }
 
+        // `valid` is sorted, so a cursor over it is enough: lines without
+        // features are reported as empty without touching the scores.
         let mut taken = 0usize;
         for i in 0..lines.len() {
             if taken < ws.valid.len() && ws.valid[taken] == i {
@@ -950,7 +954,10 @@ fn resolve_batch_size(requested: usize, labels: usize, out_rows: usize) -> usize
     if requested > 0 {
         return requested;
     }
-    // Keep the batch score matrix around 2 MiB, which fits in a typical L2.
+    // Aim the score matrix at about 2 MiB. In practice the clamp decides:
+    // the formula passes 64 lines only while there are at most 8192 labels,
+    // and what limits the kernel is the hidden block (batch * dim * 4),
+    // which no longer fits in L1 at 64 lines.
     let rows = out_rows.max(labels).max(1);
     let by_cache = (2 * 1024 * 1024) / (rows * 4).max(1);
     by_cache.clamp(8, 64)
@@ -979,9 +986,10 @@ impl PartialOrd for Candidate {
 }
 impl Ord for Candidate {
     fn cmp(&self, other: &Self) -> Ordering {
-        // Higher score is better. fastText's std::heap ordering leaves tied
-        // labels in reverse label-index order; matching that keeps the output
-        // label sequence identical for quantized sigmoid ties.
+        // Higher score is better. fastText's std::heap leaves tied labels in
+        // descending label-index order; matching that keeps the label
+        // sequence identical to the reference, which matters for the sigmoid
+        // lookup table, where distinct labels often share one probability.
         self.score
             .total_cmp(&other.score)
             .then_with(|| self.index.cmp(&other.index))
@@ -1119,8 +1127,8 @@ fn sigmoid_table(x: f32) -> f32 {
 }
 
 /// Softmax scores + top-k. Labels whose exponential is negligible are skipped
-/// when summing the denominator, which is where large label sets spend their
-/// time; the effect on any probability is far below single precision.
+/// when summing the denominator; the effect on any probability is far below
+/// single precision.
 fn finalize_softmax_into(
     scores: &[f32],
     k: usize,
@@ -1218,6 +1226,9 @@ impl HsTree {
             };
         }
         let mut nodes = Vec::with_capacity(2 * osz - 1);
+        // Internal nodes are built from the highest index down, and until an
+        // internal node is built its count must never win the "two smallest"
+        // comparison, so it starts at fastText's sentinel rather than 0.
         for _ in 0..2 * osz - 1 {
             nodes.push(HsNode {
                 parent: -1,
@@ -1273,6 +1284,8 @@ impl HsTree {
             return;
         }
         top.reset(k, self.osz);
+        // fastText prunes against log(threshold + 1e-5), so even threshold 0
+        // drops paths scoring below ln(1e-5), about -11.5.
         let min_score = std_log(threshold);
         let root = 2 * self.osz - 2;
         // Iterative DFS. Huffman trees can be very deep for adversarial label
@@ -1295,6 +1308,8 @@ impl HsTree {
                 top.push(score, node);
                 continue;
             }
+            // Tree nodes are numbered after the labels, and the output matrix
+            // has one row per internal node.
             let row = node - self.osz;
             let f = sigmoid(output.dot_row(data, row, hidden));
             let right = score + std_log(f);

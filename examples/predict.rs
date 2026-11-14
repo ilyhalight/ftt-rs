@@ -4,9 +4,9 @@
 
 use std::env;
 
-use fasttext_turbo::{Model, PredictOptions};
+use ftt_rs::{Model, PredictOptions};
 
-fn main() -> fasttext_turbo::Result<()> {
+fn main() -> ftt_rs::Result<()> {
     let path = env::args().nth(1).unwrap_or_else(|| {
         eprintln!("usage: predict <model.bin>");
         std::process::exit(2);

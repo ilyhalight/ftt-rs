@@ -5,7 +5,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use fasttext_turbo::{Model, PredictOptions, WordCacheState};
+use ftt_rs::{Model, PredictOptions, WordCacheState};
 
 const MAGIC: u32 = 0x4654_4631;
 const TOL: f32 = 2e-5;
@@ -111,7 +111,7 @@ fn check_rows(
     model_name: &str,
     case: &str,
     line: &str,
-    got: &[fasttext_turbo::Prediction<'_>],
+    got: &[ftt_rs::Prediction<'_>],
     expected: &[(String, f32)],
 ) {
     assert_eq!(
@@ -125,8 +125,8 @@ fn check_rows(
             "{model_name}/{case}: label {i} differs for {line:?}"
         );
         let diff = (g.probability - want_p).abs();
-        // Batch kernels sum in a different order, and fastText's own
-        // probabilities carry a 1e-5 bias; both are far below this tolerance.
+        // The AVX2 lanes re-associate the sum and fastText adds a 1e-5 bias;
+        // both stay far below this tolerance.
         assert!(
             diff <= TOL + TOL * want_p.abs(),
             "{model_name}/{case}: probability {i} for {line:?} differs by {diff} \
@@ -356,7 +356,7 @@ fn word_cache_is_used_only_when_it_can_help() {
 fn model_is_send_and_sync() {
     fn check<T: Send + Sync>() {}
     check::<Model>();
-    check::<fasttext_turbo::Prediction<'static>>();
+    check::<ftt_rs::Prediction<'static>>();
 }
 
 #[test]

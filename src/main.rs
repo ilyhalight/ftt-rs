@@ -4,7 +4,7 @@ use std::path::Path;
 use std::process::ExitCode;
 use std::time::Instant;
 
-use fasttext_turbo::{Model, PredictOptions, Prediction, WordCacheState};
+use ftt_rs::{Model, PredictOptions, Prediction, WordCacheState};
 use memmap2::Mmap;
 
 /// Lines handed to one parallel batch. A chunk is large enough to amortize
@@ -249,7 +249,7 @@ fn run() -> Result<(), String> {
     let cli = Cli::new();
     let command = cli.args.first().map(String::as_str).unwrap_or("");
     if cli.has(&["--version", "-V"]) {
-        println!("ftt {}", fasttext_turbo::VERSION);
+        println!("ftt {}", ftt_rs::VERSION);
         return Ok(());
     }
     if cli.has(&["-h", "--help"]) {
