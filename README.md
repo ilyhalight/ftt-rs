@@ -1,6 +1,10 @@
-# ftt-rs
+<div align="center">
+  <h1>ftt-rs</h1>
+  <p>A blazing fast, memory-mapped inference engine for <a href="https://fasttext.cc/">fastText</a> models<br>inspired by <a href="https://github.com/CommonGlot/fastText-turbo">fasttext-turbo</a> (their <a href="https://commonglot.github.io/blog/fasttext-turbo.html">research</a>), written from scratch in Rust</p>
+  <img src="./assets/hero.svg" width="100%" alt="promo banner">
+</div>
 
-A blazing fast, memory-mapped inference engine for [fastText](https://fasttext.cc/) models inspired by [fasttext-turbo](https://github.com/CommonGlot/fastText-turbo) (their [research](https://commonglot.github.io/blog/fasttext-turbo.html)), written from scratch in Rust.
+<hr>
 
 ## Quick start
 
@@ -120,16 +124,21 @@ Internal benchmarks were run on the following setup:
 - AMD Ryzen 7 PRO 3700 (8 cores / 16 threads)
 - 32 GB RAM
 
-Used `common_wide` custom set with 53636 sentences from FLORES200. In total set counts 51 languages. The language subfamilies are united. Languages list: `afr`, `ara`, `aze`, `bel`, `ben`, `bul`, `cat`, `ces`, `dan`, `deu`, `ell`, `eng`, `epo`, `fas`, `fin`, `fra`, `guj`, `hbs`, `heb`, `hin`, `hun`, `hye`, `ita`, `jpn`, `kat`, `kor`, `lav`, `lit`, `mar`, `mkd`, `msa`, `nld`, `nor`, `pan`, `pol`, `por`, `ron`, `rus`, `slk`, `slv`, `spa`, `swe`, `tam`, `tel`, `tgl`, `tha`, `tur`, `ukr`, `urd`, `vie`, `zho`
+Used `common_wide` custom set with 53636 sentences from FLORES200. In total set counts 51 languages. The language subfamilies are united.
 
 - for [lid176](https://fasttext.cc/docs/en/language-identification.html) inference **~2.5x faster** than fasttext-turbo, model loading **~40х faster** than fasttext-turbo (**~400х faster** than fasttext), memory usage **~2x lower** than fasttext (~1.5x higher than fasttext-turbo)
 - for [GlobLID v4](https://github.com/cisnlp/GlotLID) inference **~1.25x faster** than fasttext-turbo (**~1.1x faster** than fasttext), model loading **~40x faster** than fasttext-turbo (**~150x faster** than fasttext and **~13x faster** than fasttext-rs), memory usage **~1.25x less** than fasttext (roughly comparable to fasttext-rs and only 5-10% more than fasttext-turbo (c++))
+
+![Prediction time per text](./assets/predict_per_text.png)
+
+![Model memory load](./assets/model_memory_load.png)
 
 ## Building and testing
 
 ```bash
 cargo test --release           # unit tests + reference fixtures
 cargo check --target aarch64-unknown-linux-gnu   # cross-check NEON paths
+cargo build --release
 ```
 
 Fixtures are committed under `tests/data/`; regenerate them (requires Python 3.9–3.12 with `fasttext`) with:

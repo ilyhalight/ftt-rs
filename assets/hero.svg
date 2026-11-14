@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img"
+      aria-labelledby="hero-title hero-desc" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+      <title id="hero-title">ftt-rs — blazing fast, zero-copy inference for fastText models in Rust</title>
+
+      <rect x="0.5" y="0.5" width="1199" height="674" fill="#0B0F19" stroke="#1E293B" />
+
+      <g id="identity" text-anchor="middle">
+            <text x="600" y="251" font-size="180" font-weight="800" letter-spacing="-4" fill="#E6EDF3">ftt<tspan
+                        fill="#F74C00">-rs</tspan></text>
+            <text x="600" y="316" font-size="34" fill="#94A3B8">Blazing fast, zero-copy inference for fastText models in
+                  Rust</text>
+      </g>
+
+      <g id="proof">
+            <line x1="72" y1="374" x2="1128" y2="374" stroke="#1E293B" stroke-width="1.5" />
+            <line x1="424" y1="410" x2="424" y2="584" stroke="#1E293B" stroke-width="1.5" />
+            <line x1="776" y1="410" x2="776" y2="584" stroke="#1E293B" stroke-width="1.5" />
+
+            <g id="metric-loading" text-anchor="middle">
+                  <text x="248" y="476" font-size="80" font-weight="600" fill="#F74C00"
+                        font-family="ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace">~400×</text>
+                  <text x="248" y="522" font-size="26" fill="#E6EDF3">faster loading</text>
+                  <text x="248" y="560" font-size="20" fill="#8B98A9"
+                        font-family="ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace">vs fasttext</text>
+            </g>
+
+            <g id="metric-inference" text-anchor="middle">
+                  <text x="600" y="476" font-size="80" font-weight="600" fill="#F74C00"
+                        font-family="ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace">~2.5×</text>
+                  <text x="600" y="522" font-size="26" fill="#E6EDF3">faster inference</text>
+                  <text x="600" y="560" font-size="20" fill="#8B98A9"
+                        font-family="ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace">vs
+                        fasttext-turbo</text>
+            </g>
+
+            <g id="metric-correctness" text-anchor="middle">
+                  <text x="952" y="476" font-size="80" font-weight="600" fill="#10B981"
+                        font-family="ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace">0</text>
+                  <text x="952" y="522" font-size="26" fill="#E6EDF3">label mismatches</text>
+                  <text x="952" y="560" font-size="20" fill="#8B98A9"
+                        font-family="ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace">500 lines · max Δp
+                        4.2e-7</text>
+            </g>
+      </g>
+</svg>
