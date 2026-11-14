@@ -5,7 +5,7 @@ edition = "2024"
 description = "Fast, zero-copy inference for fastText models in Rust"
 license = "MIT"
 readme = "README.md"
-keywords = ["fasttext", "nlp", "inference", "simd", "language-identification"]
+keywords = ["fasttext", "nlp", "inference", "simd", "lid"]
 categories = ["science", "text-processing"]
 exclude = ["/bench", "/.github"]
 
